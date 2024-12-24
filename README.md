@@ -1,4 +1,4 @@
-# <img src="./.github/flixel3d.gif" width="64" height="64"> Flixel3D
+# Flixel3D
 
 A 3D engine for flixel, using OpenGL.
 
@@ -22,7 +22,6 @@ Add the following to your `Project.xml`:
 ## Usage
 
 ### Model loading:
-
 ```haxe
 import flixel3d.FlxModel;
 

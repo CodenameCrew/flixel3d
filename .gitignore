@@ -2,3 +2,7 @@ samples/export
 samples/export/*
 samples/.haxelib
 samples/.haxelib/*
+testplayground/export
+testplayground/export/*
+testplayground/.haxelib
+testplayground/.haxelib/*

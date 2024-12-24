@@ -10,7 +10,7 @@ import flixel3d.loaders.FbxLoader;
 import flixel3d.loaders.ObjLoader;
 
 /**
- * This is sprite which renders a single 3d model,
+ * This is a sprite which renders a single 3d model,
  * if combined with the FlxScene class, it can be used to render multiple models at once.
  * This class makes it so you can render a single object and layer it on top of another object.
  *
@@ -41,7 +41,7 @@ class FlxModel extends FlxSprite {
 		this.z = z;
 	}
 
-	public var loader:BaseLoader;
+	public var mesh:FlxMesh;
 
 	/**
 	 * Data can be either a path or a haxe.io.Bytes class of the data
