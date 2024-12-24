@@ -13,7 +13,7 @@ import openfl.display.BitmapData;
 }
 
 /**
- * ViewBitmapData represents the texture which is used
+ * ViewBitmapData represents the texture which is used as the render target
 **/
 @:access(openfl.display3D.textures.TextureBase)
 @:access(openfl.display3D.Context3D)
