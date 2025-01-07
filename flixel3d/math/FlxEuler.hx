@@ -3,7 +3,13 @@ package flixel3d.math;
 import flixel.math.FlxMath;
 
 class FlxEuler {
-	public function new(x:Float, y:Float, z:Float) {
+	public function new(x:Float = 0, y:Float = 0, z:Float = 0) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+	}
+
+	public function set(x:Float, y:Float, z:Float) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -55,7 +61,10 @@ class FlxEuler {
 	/**
 	 * Converts FlxEuler into an FlxQuaternion.
 	**/
-	public function toQuaternion():FlxQuaternion {
+	public function toQuaternion(?quaternion:FlxQuaternion):FlxQuaternion {
+		if (quaternion == null)
+			quaternion = new FlxQuaternion();
+
 		var cr:Float = Math.cos(roll * 0.5);
 		var sr:Float = Math.sin(roll * 0.5);
 		var cp:Float = Math.cos(pitch * 0.5);
@@ -63,7 +72,7 @@ class FlxEuler {
 		var cy:Float = Math.cos(yaw * 0.5);
 		var sy:Float = Math.sin(yaw * 0.5);
 
-		return new FlxQuaternion(
+		return quaternion.set(
 			cr * cp * cy + sr * sp * sy,
 			sr * cp * cy - cr * sp * sy,
 			cr * sp * cy + sr * cp * sy,
@@ -74,7 +83,10 @@ class FlxEuler {
 	/**
 	 * Same as toQuaternion, except it uses Flixel's fastSin and fastCos methods, making it faster but slightly less accurate.
 	**/
-	public function toQuaternionFast():FlxQuaternion {
+	public function toQuaternionFast(?quaternion:FlxQuaternion):FlxQuaternion {
+		if (quaternion == null)
+			quaternion = new FlxQuaternion();
+
 		var cr:Float = FlxMath.fastCos(roll * 0.5);
 		var sr:Float = FlxMath.fastSin(roll * 0.5);
 		var cp:Float = FlxMath.fastCos(pitch * 0.5);
@@ -82,7 +94,7 @@ class FlxEuler {
 		var cy:Float = FlxMath.fastCos(yaw * 0.5);
 		var sy:Float = FlxMath.fastSin(yaw * 0.5);
 
-		return new FlxQuaternion(
+		return quaternion.set(
 			cr * cp * cy + sr * sp * sy,
 			sr * cp * cy - cr * sp * sy,
 			cr * sp * cy + sr * cp * sy,

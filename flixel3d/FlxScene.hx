@@ -7,10 +7,12 @@ package flixel3d;
 class FlxScene extends FlxSprite {
 	public var models:Array<FlxModel>;
 
-	public function new() {}
+	// public var view:ViewBitmapData;
 
-	override public function draw():Void
-	{
-		
+	public function new(width:Int, height:Int) {
+		// view = new ViewBitmapData(width, height);
+		// loadGraphic(view);
 	}
+
+	override public function draw():Void {}
 }

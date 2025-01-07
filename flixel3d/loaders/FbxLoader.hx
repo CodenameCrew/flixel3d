@@ -1,6 +1,7 @@
 package flixel3d.loaders;
 
 import haxe.exceptions.NotImplementedException;
+import flixel.util.typeLimit.OneOfTwo;
 
 /**
  * Loads .fbx files
@@ -12,7 +13,7 @@ class FbxLoader extends BaseLoader {
 		super("fbx");
 	}
 
-	public function load(data:OneOfTwo<String, haxe.io.Bytes>) {
+	public override function load(data:OneOfTwo<String, haxe.io.Bytes>):FlxMesh {
 		throw new NotImplementedException();
 	}
 }

@@ -1,5 +1,7 @@
 package;
 
+import openfl.display.Bitmap;
+import flixel3d.FlxMesh;
 import openfl.display.Shader;
 import lime.graphics.PixelFormat;
 import lime.graphics.opengl.GL;
@@ -44,10 +46,11 @@ import openfl.filters.BlurFilter;
 @:access(openfl.display3D.VertexBuffer3D)
 @:access(openfl.display3D.IndexBuffer3D)
 @:access(openfl.display3D._internal.GLProgram)
-class TestState extends FlxState
+@:access(flixel3d.FlxMesh)
+class TestState4 extends FlxState
 {
 	// var loader:ObjLoader;
-	var supersampling = 1;
+	var supersampling:Int = 0;
 	var indexCount:Int = 0;
 	var ibo:GLBuffer; // :IndexBuffer3D;
 	var vbo:GLBuffer; // :VertexBuffer3D;
@@ -66,6 +69,7 @@ class TestState extends FlxState
 	var ljTexture:GLTexture;
 
 	var ljImage:Image;
+	var mesh:FlxMesh;
 
 	// var webgl
 
@@ -84,38 +88,40 @@ class TestState extends FlxState
 		vColor = gl.getAttribLocation(program, "vColor");
 		vTexCoord = gl.getAttribLocation(program, "vTexCoord");
 
-		// Vertices
-		var load = new ObjLoader();
-		load.load("assets/models/haxe.obj");
-		var vertexArray = load.vertexArray;
-		// there should be a way to pass in a normal array but that is broken and possibly platform-dependent
-		var vertexConvert = new Float32Array(vertexArray.length);
-		for (i in 0...vertexArray.length)
-		{
-			vertexConvert[i] = vertexArray[i];
-		}
+		mesh = FlxMesh.fromAssetKey("assets/models/haxe.obj");
 
-		vbo = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-		gl.bufferData(gl.ARRAY_BUFFER, vertexConvert, gl.STATIC_DRAW);
+		// Vertices
+		// var load = new ObjLoader();
+		// load.load("assets/models/haxe.obj");
+		vbo = mesh.__vertexBuffer; // FlxMesh.__createArrayBuffer(FlxMesh.__haxeArrayToFloat32Array(load.vertexArray));
+		ibo = mesh.__elementBuffer; // FlxMesh.__createElementArrayBuffer(FlxMesh.__haxeArrayToUInt16Array(load.elementArray));
+
+		indexCount = mesh.__elementCount;
+		// var vertexArray = load.vertexArray;
+
+		// there should be a way to pass in a normal array but that is broken and possibly platform-dependent
+		// var vertexConvert = FlxMesh.__haxeArrayToFloat32Array(vertexArray);
+
+		// vbo = gl.createBuffer();
+		// gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+		// gl.bufferData(gl.ARRAY_BUFFER, vertexConvert, gl.STATIC_DRAW);
+
+		// vbo = FlxMesh.__createArrayBuffer(vertexConvert);
 
 		// Indices
-		var indexArray = load.elementArray;
+		// var indexArray = load.elementArray;
 
-		var indexConvert = new lime.utils.UInt16Array(indexArray.length);
-		for (i in 0...indexArray.length)
-		{
-			indexConvert[i] = indexArray[i];
-		}
+		// var indexConvert = FlxMesh.__haxeArrayToUInt16Array(indexArray);
 
-		indexCount = indexArray.length;
+		// indexCount = indexArray.length;
 
-		ibo = gl.createBuffer();
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
-		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indexConvert, gl.STATIC_DRAW);
+		/*ibo = gl.createBuffer();
+			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
+			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indexConvert, gl.STATIC_DRAW); */
+		// ibo = FlxMesh.__createElementArrayBuffer(indexConvert);
 
-		texture = _context.createRectangleTexture(1280 * supersampling, 720 * supersampling, BGRA, true);
-		var data = BitmapData.fromTexture(texture);
+		// texture = _context.createRectangleTexture(1280 * supersampling, 720 * supersampling, BGRA, true);
+		// var data = BitmapData.fromTexture(texture);
 
 		// @:privateAccess gl.bindTexture(gl.TEXTURE_2D, texture.__textureID);
 		// gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
@@ -123,12 +129,15 @@ class TestState extends FlxState
 		// @:privateAccess trace(texture.__textureID.id);
 		var ssaa = new SSAAShader();
 		ssaa.supersampling.value = [supersampling];
-		sp = new FlxSprite().loadGraphic(data);
-		sp.setGraphicSize(1280, 720);
-		sp.updateHitbox();
-		sp.antialiasing = true;
-		sp.shader = ssaa;
-		add(sp);
+		/*sp = new FlxSprite().loadGraphic(data);
+			sp.setGraphicSize(1280, 720);
+			sp.updateHitbox();
+			sp.antialiasing = true;
+			sp.shader = ssaa;
+			add(sp); */
+
+		// var bmp = new Bitmap(data);
+		// FlxG.addChildBelowMouse(bmp);
 
 		gl.enable(gl.TEXTURE_2D);
 		ljImage = Image.fromBitmapData(Assets.getBitmapData("assets/images/itsljcool.png"));

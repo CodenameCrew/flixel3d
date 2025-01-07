@@ -4,7 +4,6 @@ import haxe.io.Eof;
 import haxe.exceptions.NotImplementedException;
 import flixel.util.typeLimit.OneOfTwo;
 import openfl.utils.ByteArray;
-import flixel3d.FlxMeshGroup;
 
 /**
  * Loads .obj files
@@ -19,6 +18,9 @@ class ObjLoader extends BaseLoader {
 
 	private var faces:Array<String> = [];
 
+	private var curName:String;
+	private var firstMesh:Bool = true;
+
 	/**
 	 * Parses a line from the .obj file.
 	 * Throws an exception if invalid data is detected.
@@ -29,8 +31,19 @@ class ObjLoader extends BaseLoader {
 			/*case "#": // comment
 				case "mtllib": // the file wth material data
 				case "o": // idk what this is, probably the name of the object? */
-			//case "o": // new FlxMesh with name
-				//trace(splitLine[1]);
+			case "o": // new FlxMesh with name
+				curName = splitLine[1];
+				if (!firstMesh) {
+					/*meshes.push(FlxMesh.fromArray(vertexArray, elementArray));
+						vertexArray = [];
+						elementArray = [];
+						vertexCoords = [];
+						normalCoords = [];
+						textureCoords = []; */
+				}
+				firstMesh = false;
+
+			// trace(splitLine[1]);
 			case "v": // vertex coord
 				var vertex:Array<Float> = [];
 				for (i in 1...4) {
@@ -57,54 +70,53 @@ class ObjLoader extends BaseLoader {
 				var elements:Array<UInt> = [];
 				var vertices = new Array<Array<String>>();
 				var faceVertexCount:UInt = 0;
-				//trace(numVertices);
+				// trace(numVertices);
 				for (i in 0...numVertices) {
-					var faceVertex = splitLine[i+1].split("/");
+					var faceVertex = splitLine[i + 1].split("/");
 					vertices.push(faceVertex);
-					//trace(faceVertex);
-					
-					//trace(Std.parseInt(faceVertex[0]));
-					for (v in vertexCoords[Std.parseInt(faceVertex[0])-1])
-						//vertexBuffer.writeFloat(v);
+					// trace(faceVertex);
+
+					// trace(Std.parseInt(faceVertex[0]));
+					for (v in vertexCoords[Std.parseInt(faceVertex[0]) - 1])
+						// vertexBuffer.writeFloat(v);
 						vertexArray.push(v);
 
-					for (i in 0...3){
+					for (i in 0...3) {
 						vertexArray.push(1);
-						//vertexBuffer.writeFloat(1); // vertex colour (note: maybe add option to disable vertex colours on mesh to reduce bandwidth?)
+						// vertexBuffer.writeFloat(1); // vertex colour (note: maybe add option to disable vertex colours on mesh to reduce bandwidth?)
 					}
-					
-					for (v in textureCoords[Std.parseInt(faceVertex[1])-1])
-						//vertexBuffer.writeFloat(v);
+
+					for (v in textureCoords[Std.parseInt(faceVertex[1]) - 1])
+						// vertexBuffer.writeFloat(v);
 						vertexArray.push(v);
-					//elementBuffer.writeUnsignedInt(vertexCount++);
-					//trace(faceVertexCount);
+					// elementBuffer.writeUnsignedInt(vertexCount++);
+					// trace(faceVertexCount);
 
 					// create more indices to split the stinky quad into two triangles
 					/*if (numVertices == 4 && faceVertexCount == 3)
-					{
-						elements.push(elements[1]);
-						elements.push(elements[2]);
+						{
+							elements.push(elements[1]);
+							elements.push(elements[2]);
 					}*/
-					
+
 					elements.push(vertexCount++);
 					faceVertexCount++;
 				}
 				switch (numVertices) {
-					case 3: // we need to make 
-						for (element in elements)
-						{
+					case 3: // we need to make
+						for (element in elements) {
 							elementArray.push(element);
-							//elementBuffer.writeUnsignedInt(element);
-						}		
+							// elementBuffer.writeUnsignedInt(element);
+						}
 					case 4:
 						// https://gamedev.stackexchange.com/a/45685 🙏 BLESS 🙏
-						elementArray.push(elements[0]);	
-						elementArray.push(elements[1]);	
-						elementArray.push(elements[2]);	
-						
-						elementArray.push(elements[2]);	
-						elementArray.push(elements[3]);	
-						elementArray.push(elements[0]);	
+						elementArray.push(elements[0]);
+						elementArray.push(elements[1]);
+						elementArray.push(elements[2]);
+
+						elementArray.push(elements[2]);
+						elementArray.push(elements[3]);
+						elementArray.push(elements[0]);
 				}
 		}
 	}
@@ -117,8 +129,10 @@ class ObjLoader extends BaseLoader {
 				var line = this.data.readLine();
 				parseLine(line);
 			}
+			parseLine("o " + curName);
 		} catch (e:Eof) {}
 
 		return FlxMesh.fromArray(vertexArray, elementArray);
+		// return meshes;
 	}
 }

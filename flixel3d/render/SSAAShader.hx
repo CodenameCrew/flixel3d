@@ -1,10 +1,9 @@
-package;
+package flixel3d.render;
 
 import flixel.system.FlxAssets.FlxShader;
 
-class SSAAShader extends FlxShader
-{
-    @:glFragmentSource("
+class SSAAShader extends FlxShader {
+	@:glFragmentSource("
     #pragma header
 
     uniform int supersampling;
@@ -28,16 +27,13 @@ class SSAAShader extends FlxShader
         gl_FragColor = sum;
 
     }")
-
-    /*
-        int halfsupersampling = supersampling / 2;
-        for (int x = -halfsupersampling; x < halfsupersampling; x++)
-        {
-            for (int y = 0; y < halfsupersampling; y++)
-    */
-    
-    public function new()
-    {
-        super();
-    }
+	/*
+		int halfsupersampling = supersampling / 2;
+		for (int x = -halfsupersampling; x < halfsupersampling; x++)
+		{
+			for (int y = 0; y < halfsupersampling; y++)
+	 */
+	public function new() {
+		super();
+	}
 }

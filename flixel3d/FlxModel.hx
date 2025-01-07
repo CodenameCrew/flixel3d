@@ -1,115 +1,99 @@
 package flixel3d;
 
+import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.FlxBasic;
 import flixel.FlxSprite;
 import flixel.math.FlxVelocity;
-import flixel.util.typeLimit.OneOfTwo;
+import flixel.util.typeLimit.OneOfThree;
 import flixel3d.math.FlxPoint3D;
 import flixel3d.loaders.BaseLoader;
 import flixel3d.loaders.FbxLoader;
 import flixel3d.loaders.ObjLoader;
+import flixel3d.system.Flx3DAssets.FlxMeshFormat;
+import lime.utils.Float32Array;
+import flixel.util.FlxColor;
 
 /**
  * This is a sprite which renders a single 3d model,
  * if combined with the FlxScene class, it can be used to render multiple models at once.
  * This class makes it so you can render a single object and layer it on top of another object.
+ * FlxModels do not appear on regular `FlxCamera`s, only `FlxCamera3D`s.
  *
  * Dev note: im not sure if i should use FlxSprite or FlxBasic here
 **/
-class FlxModel extends FlxSprite {
-	public var z:Float;
+class FlxModel extends FlxObject3D {
+	private var mx:Float32Array;
 
-	// Angular velocity
-	public var angularVelocity3D:FlxPoint3D = new FlxPoint3D();
-	public var angularMaxVelocity3D:FlxPoint3D = new FlxPoint3D();
-	public var angularAcceleration3D:FlxPoint3D = new FlxPoint3D();
-	public var angularDrag3D:FlxPoint3D = new FlxPoint3D();
-
-	// Normal velocity
-	public var velocity3D:FlxPoint3D = new FlxPoint3D();
-	public var maxVelocity3D:FlxPoint3D = new FlxPoint3D();
-	public var acceleration3D:FlxPoint3D = new FlxPoint3D();
-	public var drag3D:FlxPoint3D = new FlxPoint3D();
-
-	// Angle
-	public var angleX:Float;
-	public var angleY:Float;
-	public var angleZ:Float;
+	public var color:FlxColor = 0xFFFFFFFF;
 
 	public function new(x:Float = 0, y:Float = 0, z:Float = 0) {
-		super(x, y);
-		this.z = z;
+		mx = new Float32Array(16);
+		super(x, y, z);
 	}
 
-	public var mesh:FlxMesh;
+	public function getTransformMatrix():Float32Array {
+		// dev note: should i be sentenced to death?
 
-	/**
-	 * Data can be either a path or a haxe.io.Bytes class of the data
-	**/
-	public function loadFbxModel(data:OneOfTwo<String, haxe.io.Bytes>) {
-		loader = new FbxLoader();
-		loader.load(data);
-		// TODO: used the parsed data
+		var rx:Float = angleX;
+		var ry:Float = angleY;
+		var rz:Float = angleZ;
+
+		// stored in column-major form
+		mx[0] = Math.cos(rz) * Math.cos(ry);
+		mx[1] = Math.cos(rz) * Math.sin(ry) * Math.sin(rx) - Math.sin(rz) * Math.cos(rx);
+		mx[2] = Math.cos(rz) * Math.sin(ry) * Math.cos(rx) + Math.sin(rz) * Math.sin(rx);
+		mx[3] = x;
+
+		mx[4] = Math.sin(rz) * Math.cos(ry);
+		mx[5] = Math.sin(rz) * Math.sin(ry) * Math.sin(rx) + Math.cos(rz) * Math.cos(rx);
+		mx[6] = Math.sin(rz) * Math.sin(ry) * Math.cos(rx) - Math.cos(rz) * Math.sin(rx);
+		mx[7] = y;
+
+		mx[8] = -Math.sin(ry);
+		mx[9] = Math.cos(ry) * Math.sin(rx);
+		mx[10] = Math.cos(ry) * Math.cos(rx);
+		mx[11] = z;
+
+		mx[12] = 0.;
+		mx[13] = 0.;
+		mx[14] = 0.;
+		mx[15] = 1.;
+
+		return mx;
 	}
 
+	public var meshes:Array<FlxMesh>;
+
 	/**
-	 * Data can be either a path or a haxe.io.Bytes class of the data
+	 * Data can be either a path, a haxe.io.Bytes class of the data or an existing FlxMesh instance.
 	**/
-	public function loadObjModel(data:OneOfTwo<String, haxe.io.Bytes>) {
-		loader = new ObjLoader();
-		loader.load(data);
-		// TODO: used the parsed data
+	public function loadMesh(data:OneOfThree<String, haxe.io.Bytes, flixel3d.FlxMesh>, ?texture:FlxGraphicAsset, ?format:FlxMeshFormat):FlxModel {
+		// possibly add functionality to destroy previous meshes if they are not used?
+		meshes = [];
+		return addMesh(data, texture, format);
+	}
+
+	public function addMesh(data:OneOfThree<String, haxe.io.Bytes, flixel3d.FlxMesh>, ?texture:FlxGraphicAsset, ?format:FlxMeshFormat) {
+		if (Std.isOfType(data, String)) {
+			meshes.push(FlxMesh.fromAssetKey(data, false, null, true, format));
+		} else if (Std.isOfType(data, haxe.io.Bytes)) { // loading from bytes is not properly implemented if at all, don't use this
+			meshes.push(FlxMesh.fromBytes(data, format));
+		} else {
+			meshes.push(data);
+		}
+		return this;
 	}
 
 	public override function update(elapsed:Float) {
 		super.update(elapsed);
 	}
 
-	override function updateMotion(elapsed:Float) {
-		super.updateMotion(elapsed);
-
-		// Angular velocity
-		// X-axis
-		var velocityDelta = 0.5 * (FlxVelocity.computeVelocity(angularVelocity3D.x, angularAcceleration3D.x, angularDrag3D.x, angularMaxVelocity3D.x, elapsed) - angularVelocity3D.x);
-		angularVelocity3D.x += velocityDelta;
-		var angleDeltaX = angularVelocity3D.x * elapsed;
-		angularVelocity3D.x += velocityDelta;
-		angleX += angleDeltaX;
-
-		// Y-axis
-		var velocityDelta = 0.5 * (FlxVelocity.computeVelocity(angularVelocity3D.y, angularAcceleration3D.y, angularDrag3D.y, angularMaxVelocity3D.y, elapsed) - angularVelocity3D.y);
-		angularVelocity3D.y += velocityDelta;
-		var angleDeltaY = angularVelocity3D.y * elapsed;
-		angularVelocity3D.y += velocityDelta;
-		angleY += angleDeltaY;
-
-		// Z-axis
-		var velocityDelta = 0.5 * (FlxVelocity.computeVelocity(angularVelocity3D.z, angularAcceleration3D.z, angularDrag3D.z, angularMaxVelocity3D.z, elapsed) - angularVelocity3D.z);
-		angularVelocity3D.z += velocityDelta;
-		var angleDeltaZ = angularVelocity3D.z * elapsed;
-		angularVelocity3D.z += velocityDelta;
-		angleZ += angleDeltaZ;
-
-		// Velocity
-		// X-axis
-		var velocityDelta = 0.5 * (FlxVelocity.computeVelocity(velocity3D.x, acceleration3D.x, drag3D.x, maxVelocity3D.x, elapsed) - velocity3D.x);
-		velocity3D.x += velocityDelta;
-		var deltaX = velocity3D.x * elapsed;
-		velocity3D.x += velocityDelta;
-		x += deltaX;
-
-		// Y-axis
-		var velocityDelta = 0.5 * (FlxVelocity.computeVelocity(velocity3D.y, acceleration3D.y, drag3D.y, maxVelocity3D.y, elapsed) - velocity3D.y);
-		velocity3D.y += velocityDelta;
-		var deltaY = velocity3D.y * elapsed;
-		velocity3D.y += velocityDelta;
-		y += deltaY;
-
-		// Z-axis
-		var velocityDelta = 0.5 * (FlxVelocity.computeVelocity(velocity3D.z, acceleration3D.z, drag3D.z, maxVelocity3D.z, elapsed) - velocity3D.z);
-		velocity3D.z += velocityDelta;
-		var deltaZ = velocity3D.z * elapsed;
-		velocity3D.z += velocityDelta;
-		z += deltaZ;
+	public override function draw() {
+		for (cam in cameras) {
+			if (Std.isOfType(cam, FlxCamera3D)) {
+				var cam3D:FlxCamera3D = cast cam;
+				cam3D.addToRenderQueue(this);
+			}
+		}
 	}
 }

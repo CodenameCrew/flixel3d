@@ -9,6 +9,8 @@ class BaseLoader {
 	public var format:String;
 	public var data:BytesInput;
 
+	private var meshes:Array<FlxMesh>;
+
 	/*
 		public var vertexCount(default, null):UInt = 0;
 		public var vertexCoords:ByteArray;
@@ -29,14 +31,13 @@ class BaseLoader {
 	public var vertexCount(default, null):UInt = 0;
 	public var vertexBuffer:ByteArray;
 
-	
 	public var vertexArray:Array<Float>;
 	public var elementArray:Array<UInt>;
 
 	public function new(format:String) {
 		this.format = format;
-		//vertexBuffer = new ByteArray();
-		//elementBuffer = new ByteArray();
+		// vertexBuffer = new ByteArray();
+		// elementBuffer = new ByteArray();
 	}
 
 	/**
@@ -47,8 +48,9 @@ class BaseLoader {
 		vertexCoords = [];
 		normalCoords = [];
 		textureCoords = [];
-		//vertexBuffer.clear();
-		//elementBuffer.clear();
+		meshes = [];
+		// vertexBuffer.clear();
+		// elementBuffer.clear();
 		vertexArray = [];
 		elementArray = [];
 
