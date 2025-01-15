@@ -10,14 +10,15 @@ attribute vec2 vTexCoord;
 //attribute mat4 vTransform;
 
 uniform mat4 uTransform;
+uniform mat4 uCameraTransform;
 
 varying vec3 fColor;
 varying vec2 fTexCoord;
 
 //uniform vec3 modelPosition = vec3(0., 0., -5.);
 //uniform vec3 modelRotation = vec3(0., vTime, 0.);
-uniform vec3 positions[128];
-uniform vec3 rotations[128];
+//uniform vec3 positions[128];
+//uniform vec3 rotations[128];
 
 //uniform float vTime;
 
@@ -64,7 +65,7 @@ void main()
 
     mat4 model = uTransform; //transformMatrix(modelPosition, modelRotation);
     
-    mat4 view = transformMatrix(vec3(0., 0., 0.), vec3(0., 0., 0.));
+    mat4 view = uCameraTransform; // transformMatrix(vec3(0., 0., 0.), vec3(0., 0., 0.));
 
     fColor = vColor;
     fTexCoord = vTexCoord;

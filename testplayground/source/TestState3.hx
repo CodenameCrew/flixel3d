@@ -69,5 +69,7 @@ class TestState3 extends FlxState
 			haxe.x = (FlxG.mouse.x / FlxG.width - 0.5) * 2;
 			haxe.y = (FlxG.mouse.y / FlxG.height - 0.5) * 2; */
 		// haxe.z -= 0.1;
+
+		//cam3D.transform.x
 	}
 }
