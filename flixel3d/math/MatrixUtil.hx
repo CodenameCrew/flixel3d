@@ -6,6 +6,8 @@ import lime.utils.Float32Array;
 class MatrixUtil {
 	private static final deg2rad = (Math.PI / 180);
 
+	private static var __matrix:Float32Array = new Float32Array(16);
+
 	/*public static macro function __cacheSin()
 		{
 			var cache:Float32Array = new Float32Array(360);
