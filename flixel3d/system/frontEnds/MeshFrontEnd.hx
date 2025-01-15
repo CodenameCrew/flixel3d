@@ -194,13 +194,13 @@ class MeshFrontEnd
 	 */
 	public function remove(graphic:FlxGraphic):Void
 	{
-		if (graphic != null)
+		/*if (graphic != null)
 		{
 			removeKey(graphic.key);
 			// TODO: find causes of this, and prevent crashes from double graphic destroys
 			if (!graphic.isDestroyed)
 				graphic.destroy();
-		}
+		}*/
 	}
 
 	/**

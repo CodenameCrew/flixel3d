@@ -12,6 +12,7 @@ import flixel3d.loaders.ObjLoader;
 import flixel3d.system.Flx3DAssets.FlxMeshFormat;
 import lime.utils.Float32Array;
 import flixel.util.FlxColor;
+import flixel3d.math.MatrixUtil;
 
 /**
  * This is a sprite which renders a single 3d model,
@@ -32,34 +33,7 @@ class FlxModel extends FlxObject3D {
 	}
 
 	public function getTransformMatrix():Float32Array {
-		// dev note: should i be sentenced to death?
-
-		var rx:Float = angleX;
-		var ry:Float = angleY;
-		var rz:Float = angleZ;
-
-		// stored in column-major form
-		mx[0] = Math.cos(rz) * Math.cos(ry);
-		mx[1] = Math.cos(rz) * Math.sin(ry) * Math.sin(rx) - Math.sin(rz) * Math.cos(rx);
-		mx[2] = Math.cos(rz) * Math.sin(ry) * Math.cos(rx) + Math.sin(rz) * Math.sin(rx);
-		mx[3] = x;
-
-		mx[4] = Math.sin(rz) * Math.cos(ry);
-		mx[5] = Math.sin(rz) * Math.sin(ry) * Math.sin(rx) + Math.cos(rz) * Math.cos(rx);
-		mx[6] = Math.sin(rz) * Math.sin(ry) * Math.cos(rx) - Math.cos(rz) * Math.sin(rx);
-		mx[7] = y;
-
-		mx[8] = -Math.sin(ry);
-		mx[9] = Math.cos(ry) * Math.sin(rx);
-		mx[10] = Math.cos(ry) * Math.cos(rx);
-		mx[11] = z;
-
-		mx[12] = 0.;
-		mx[13] = 0.;
-		mx[14] = 0.;
-		mx[15] = 1.;
-
-		return mx;
+		return MatrixUtil.calculateTransform(this);
 	}
 
 	public var meshes:Array<FlxMesh>;

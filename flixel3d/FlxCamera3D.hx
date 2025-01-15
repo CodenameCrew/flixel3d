@@ -12,6 +12,8 @@ import openfl.filters.ShaderFilter;
 
 @:access(flixel3d.render.ViewBitmap)
 class FlxCamera3D extends FlxCamera {
+	public var transform:FlxObject3D;
+
 	private var __supersampling:FlxSupersampling;
 
 	public var supersampling(get, set):FlxSupersampling;
