@@ -1,5 +1,5 @@
 //#version 330 es //#version 120
-precision highp float;
+//precision highp float;
 
 //out vec4 fragColor;
 
@@ -7,6 +7,7 @@ varying vec2 fTexCoord;
 varying vec3 fColor;
 
 uniform sampler2D bitmap;
+uniform vec4 uModelColor;
 uniform vec4 uColor;
 
 float near = 07.;
@@ -26,5 +27,5 @@ void main()
     //float depth = (gl_FragCoord.z + 5.0) * 0.01; //0.01;
     //FragColor = vec4(vec3(depth), 1.0);
     //fragColor = vec4(texture(bitmap, fTexCoord).rgb * depth, 1.0); //vec4(fColor * gl_FragCoord.z, 1.0); //0.5 * (1. + sin(iTime))
-    gl_FragColor = texture2D(bitmap, fTexCoord) * uColor;
+    gl_FragColor = texture2D(bitmap, fTexCoord) * uColor * uModelColor * vec4(fColor, 1.);
 }

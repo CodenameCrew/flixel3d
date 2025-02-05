@@ -13,7 +13,7 @@ class FbxLoader extends BaseLoader {
 		super("fbx");
 	}
 
-	public override function load(data:OneOfTwo<String, haxe.io.Bytes>):FlxMesh {
+	public override function load(data:OneOfTwo<String, haxe.io.Bytes>):Map<String, FlxMeshData> {
 		throw new NotImplementedException();
 	}
 }

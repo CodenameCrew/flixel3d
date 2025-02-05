@@ -6,3 +6,5 @@ testplayground/export
 testplayground/export/*
 testplayground/.haxelib
 testplayground/.haxelib/*
+**/.DS_Store
+export/

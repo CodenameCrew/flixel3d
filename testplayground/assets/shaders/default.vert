@@ -1,5 +1,10 @@
 //#version 330 es //#version 120
-precision highp float;
+//precision highp float;
+
+
+/*
+shading - depending on how close the light is in angle to the normal
+*/
 
 #define PI 3.14159265
 
@@ -9,7 +14,9 @@ attribute vec3 vColor;
 attribute vec2 vTexCoord;
 //attribute mat4 vTransform;
 
-uniform mat4 uTransform;
+uniform vec3 uCameraPosition;
+uniform mat4 uViewTransform;
+uniform mat4 uModelTransform;
 
 varying vec3 fColor;
 varying vec2 fTexCoord;
@@ -19,7 +26,7 @@ varying vec2 fTexCoord;
 uniform vec3 positions[128];
 uniform vec3 rotations[128];
 
-//uniform float vTime;
+uniform float uTime;
 
 float far = 100.;
 float near = 0.1;
@@ -62,11 +69,18 @@ void main()
     projection[2] = vec4(0.,                    0.,              -((far+near)/(far-near)),   -((2.*far*near)/(far-near)));
     projection[3] = vec4(0.,                    0.,              -1.,                         0.);
 
-    mat4 model = uTransform; //transformMatrix(modelPosition, modelRotation);
-    
-    mat4 view = transformMatrix(vec3(0., 0., 0.), vec3(0., 0., 0.));
+    mat4 model = uModelTransform; //transformMatrix(modelPosition, modelRotation);
 
-    fColor = vColor;
+    mat4 view = uViewTransform; //transformMatrix(vec3(0., 0., -5.), vec3(0., uTime, 0.));  //
+
+    view[0][3] = 0.;
+    view[1][3] = 0.;
+    view[2][3] = 0.;
+
+    float lightness = 0.5 +  (vPosition.z) / 2.;
+    fColor = vColor * lightness;
     fTexCoord = vTexCoord;
-    gl_Position = vec4(vPosition, 1.) * model * view * projection;
+    vec4 pos = vec4(vPosition * vec3(1, -1, 1) + uCameraPosition, 1.) * model * view * projection;
+    //xspos.y = -pos.y;
+    gl_Position = pos;
 }

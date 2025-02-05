@@ -1,5 +1,6 @@
 package flixel3d.render;
 
+import flixel3d.FlxCamera3D;
 import flixel.util.FlxColor;
 import openfl.display.Bitmap;
 import flixel3d.render.ViewBitmapData;
@@ -12,11 +13,15 @@ class ViewBitmap extends Bitmap {
 		super(__data);
 	}
 
-	public function render(models:Array<FlxModel>, clearColor:FlxColor = 0xFF000000) {
-		__data.render(models, clearColor);
+	public function render(models:Array<FlxModel>, camera:FlxCamera3D) {
+		__data.render(models, camera);
 	}
 
 	public function resize(width:Int, height:Int) {
 		__data.resize(width, height);
+	}
+
+	public function dispose() {
+		__data.dispose();
 	}
 }

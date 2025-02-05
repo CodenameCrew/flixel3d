@@ -1,5 +1,6 @@
 package flixel3d.loaders;
 
+import flixel3d.FlxMeshData.VertexAttribute;
 import haxe.io.Eof;
 import haxe.exceptions.NotImplementedException;
 import flixel.util.typeLimit.OneOfTwo;
@@ -10,6 +11,7 @@ import openfl.utils.ByteArray;
  *
  * Spec: https://www.martinreddy.net/gfx/3d/OBJ.spec
  * Spec: https://www.fileformat.info/format/material/
+ *
 **/
 class ObjLoader extends BaseLoader {
 	public function new() {
@@ -21,27 +23,36 @@ class ObjLoader extends BaseLoader {
 	private var curName:String;
 	private var firstMesh:Bool = true;
 
+	private var elementOffset:UInt = 0;
+
 	/**
 	 * Parses a line from the .obj file.
 	 * Throws an exception if invalid data is detected.
 	**/
+	// BUG: Quads don't always load correctly. The current workaround is to manually triangulate quads in Blender.
+	// TODO: Add MTL support
 	private function parseLine(line:String) {
 		var splitLine:Array<String> = line.split(" ");
 		switch (splitLine[0]) {
 			/*case "#": // comment
 				case "mtllib": // the file wth material data
 				case "o": // idk what this is, probably the name of the object? */
-			case "o": // new FlxMesh with name
-				curName = splitLine[1];
+			case "o": // new FlxMeshData with name
 				if (!firstMesh) {
-					/*meshes.push(FlxMesh.fromArray(vertexArray, elementArray));
-						vertexArray = [];
-						elementArray = [];
-						vertexCoords = [];
+					// var attributes:Array<VertexAttribute> = [{name: "vPosition", count: 3}, {name: "vTexCoord", count: 2}];
+					meshes.set(curName, FlxMeshData.fromArray(vertexArray, elementArray, []));
+					// faceOffsetVertex += vertexCoords.length;
+					// faceOffsetTexture += textureCoords.length;
+					elementOffset += elementArray.length;
+					// trace(curName, vertexArray, elementArray);
+					vertexArray = [];
+					elementArray = [];
+					/*vertexCoords = [];
 						normalCoords = [];
 						textureCoords = []; */
 				}
 				firstMesh = false;
+				curName = splitLine[1];
 
 			// trace(splitLine[1]);
 			case "v": // vertex coord
@@ -77,6 +88,9 @@ class ObjLoader extends BaseLoader {
 					// trace(faceVertex);
 
 					// trace(Std.parseInt(faceVertex[0]));
+					// trace(vertexCoords);
+					// trace(vertexCoords[Std.parseInt(faceVertex[0]) - 1 - faceOffsetVertex], vertexCoords.length);
+					// trace(vertexCoords[Std.parseInt(faceVertex[0]) - 1 - faceOffsetVertex].length, vertexCoords.length);
 					for (v in vertexCoords[Std.parseInt(faceVertex[0]) - 1])
 						// vertexBuffer.writeFloat(v);
 						vertexArray.push(v);
@@ -99,7 +113,7 @@ class ObjLoader extends BaseLoader {
 							elements.push(elements[2]);
 					}*/
 
-					elements.push(vertexCount++);
+					elements.push(vertexCount++ - elementOffset);
 					faceVertexCount++;
 				}
 				switch (numVertices) {
@@ -121,7 +135,7 @@ class ObjLoader extends BaseLoader {
 		}
 	}
 
-	public override function load(data:OneOfTwo<String, haxe.io.Bytes>):FlxMesh {
+	public override function load(data:OneOfTwo<String, haxe.io.Bytes>):Map<String, FlxMeshData> {
 		super.load(data);
 
 		try {
@@ -129,10 +143,12 @@ class ObjLoader extends BaseLoader {
 				var line = this.data.readLine();
 				parseLine(line);
 			}
-			parseLine("o " + curName);
-		} catch (e:Eof) {}
+		} catch (e:Eof) {
+			parseLine("o end");
+		}
 
-		return FlxMesh.fromArray(vertexArray, elementArray);
-		// return meshes;
+		// meshes.set("lol", FlxMeshData.fromArray(vertexArray, elementArray, [])); // return FlxMeshData.fromArray(vertexArray, elementArray);
+
+		return meshes;
 	}
 }

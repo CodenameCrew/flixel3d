@@ -32,12 +32,15 @@ class Main extends Sprite
 		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onCrash);
 		FlxTexture.defaultTexture = FlxTexture.fromBitmapData(new BitmapData(1, 1, 0xFFFFFFFF)); // FlxColor.fromRGB(246, 136, 31)
 
-		addChild(new FlxGame(0, 0, TestState3, 60, 60, true));
+		flixel3d.FlxSplash3D.nextState = PlayState;
+		addChild(new FlxGame(0, 0, flixel3d.FlxSplash3D, 240, 240, true));
 		// });
 
 		addChild(new FPS(10, 10, 0xFFFFFF));
 
-		FlxG.updateFramerate = FlxG.drawFramerate = 240;
+		// FlxG.resizeWindow(1280, 720);
+
+		// FlxG.updateFramerate = FlxG.drawFramerate = 60;
 		FlxG.autoPause = false;
 	}
 

@@ -16,7 +16,7 @@ import lime.graphics.opengl.GL;
 **/
 @:access(openfl.display3D.textures.TextureBase)
 @:access(openfl.display3D.Context3D)
-@:access(flixel3d.FlxMesh)
+@:access(flixel3d.FlxMeshData)
 @:access(flixel3d.shading.FlxMaterial)
 @:access(flixel3d.shading.FlxShader3D)
 @:access(flixel3d.FlxTexture)
@@ -64,7 +64,8 @@ class ViewBitmapData extends BitmapData {
 
 	var depthFunc:Int = GL.LESS;
 
-	public function render(models:Array<FlxModel>, clearColor:FlxColor = 0xFF000000) {
+	public function render(models:Array<FlxModel>, camera:FlxCamera3D) {
+		var clearColor = camera.bgColor;
 		var gl:WebGLRenderContext = FlxG3D.gl;
 		setRenderToTexture();
 		flush();
@@ -84,7 +85,12 @@ class ViewBitmapData extends BitmapData {
 		clear(gl, clearColor);
 
 		for (model in models) {
-			for (mesh in model.meshes) {
+			// trace(model.meshes);
+			for (kv in model.meshes.keyValueIterator()) {
+				// trace(kv.key);
+				var mesh:FlxMesh = kv.value;
+				var program:GLProgram = mesh.material.__shader.__glProgram;
+				gl.useProgram(program);
 				if (mesh.material.textures.length != 0) {
 					for (i in 0...mesh.material.textures.length) {
 						if (i < maxTextureUnits) {
@@ -97,21 +103,61 @@ class ViewBitmapData extends BitmapData {
 					gl.bindTexture(gl.TEXTURE_2D, FlxTexture.defaultTexture.__glTexture);
 				}
 				// Shader
-				var program:GLProgram = mesh.material.__shader.__glProgram;
-				gl.useProgram(program);
-				var uTransform = gl.getUniformLocation(program, "uTransform");
-				gl.uniformMatrix4fv(uTransform, false, model.getTransformMatrix());
+				var uCameraPosition = gl.getUniformLocation(program, "uCameraPosition");
+				gl.uniform3f(uCameraPosition, camera.transform.x, camera.transform.y, camera.transform.z);
 
-				var color = model.color;
+				var uViewTransform = gl.getUniformLocation(program, "uViewTransform");
+				gl.uniformMatrix4fv(uViewTransform, false, camera.getTransformMatrix());
+				var uModelTransform = gl.getUniformLocation(program, "uModelTransform");
+				gl.uniformMatrix4fv(uModelTransform, false, model.getTransformMatrix());
+
+				var modelColor = model.color;
+				var uModelColor = gl.getUniformLocation(program, "uModelColor");
+				gl.uniform4f(uModelColor, modelColor.redFloat, modelColor.greenFloat, modelColor.blueFloat, modelColor.alphaFloat);
+
+				var color = mesh.material.color;
 				var uColor = gl.getUniformLocation(program, "uColor");
 				gl.uniform4f(uColor, color.redFloat, color.greenFloat, color.blueFloat, color.alphaFloat);
 
+				// Vertex Buffer
+				gl.bindBuffer(gl.ARRAY_BUFFER, mesh.data.__vertexBuffer);
+
+				var uTime = gl.getUniformLocation(program, "uTime");
+				gl.uniform1f(uTime, flixel.FlxG.game.ticks * 0.001);
+
+				var offset:Int = 0;
+				/*for (i in 0...mesh.data.attributes.length) {
+					// break;
+					var attr = mesh.data.attributes[i];
+					gl.vertexAttribPointer(gl.getAttribLocation(program, attr.name), attr.count, gl.FLOAT, false, 32, offset * 4);
+					gl.enableVertexAttribArray(i);
+					offset += attr.count;
+				}*/
+				/*var vPosition:Int = gl.getAttribLocation(program, "vPosition");
+					var vColor:Int = gl.getAttribLocation(program, "vColor");
+					var vTexCoord:Int = gl.getAttribLocation(program, "vTexCoord");
+
+					// Vertex Buffer
+					gl.bindBuffer(gl.ARRAY_BUFFER, mesh.data.__vertexBuffer);
+
+					// Vertex Position
+					gl.vertexAttribPointer(vPosition, 3, gl.FLOAT, false, 32, 0);
+					gl.enableVertexAttribArray(0);
+
+					// Vertex Color
+					gl.vertexAttribPointer(vColor, 3, gl.FLOAT, false, 32, 12);
+					gl.enableVertexAttribArray(1);
+
+					// Vertex Texture Position
+					gl.vertexAttribPointer(vTexCoord, 2, gl.FLOAT, false, 32, 24);
+					gl.enableVertexAttribArray(2);
+				 */
 				var vPosition:Int = gl.getAttribLocation(program, "vPosition");
 				var vColor:Int = gl.getAttribLocation(program, "vColor");
 				var vTexCoord:Int = gl.getAttribLocation(program, "vTexCoord");
 
 				// Vertex Buffer
-				gl.bindBuffer(gl.ARRAY_BUFFER, mesh.__vertexBuffer);
+				gl.bindBuffer(gl.ARRAY_BUFFER, mesh.data.__vertexBuffer);
 
 				// Vertex Position
 				gl.vertexAttribPointer(vPosition, 3, gl.FLOAT, false, 32, 0);
@@ -124,10 +170,9 @@ class ViewBitmapData extends BitmapData {
 				// Vertex Texture Position
 				gl.vertexAttribPointer(vTexCoord, 2, gl.FLOAT, false, 32, 24);
 				gl.enableVertexAttribArray(2);
-
 				// Draw to framebuffer
-				gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mesh.__elementBuffer);
-				gl.drawElements(gl.TRIANGLES, mesh.__elementCount, gl.UNSIGNED_SHORT, 0);
+				gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mesh.data.__elementBuffer);
+				gl.drawElements(gl.TRIANGLES, mesh.data.__elementCount, gl.UNSIGNED_SHORT, 0);
 			}
 		}
 

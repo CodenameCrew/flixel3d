@@ -12,6 +12,7 @@ import flixel3d.loaders.ObjLoader;
 import flixel3d.system.Flx3DAssets.FlxMeshFormat;
 import lime.utils.Float32Array;
 import flixel.util.FlxColor;
+import flixel3d.math.MatrixUtil;
 
 /**
  * This is a sprite which renders a single 3d model,
@@ -27,11 +28,18 @@ class FlxModel extends FlxObject3D {
 	public var color:FlxColor = 0xFFFFFFFF;
 
 	public function new(x:Float = 0, y:Float = 0, z:Float = 0) {
+		meshes = [];
 		mx = new Float32Array(16);
 		super(x, y, z);
 	}
 
-	public function getTransformMatrix():Float32Array {
+	public function forEachMesh(func:(name:String, mesh:FlxMesh) -> Void) {
+		for (kv in meshes.keyValueIterator()) {
+			func(kv.key, kv.value);
+		}
+	}
+
+	/*public function getTransformMatrix():Float32Array {
 		// dev note: should i be sentenced to death?
 
 		var rx:Float = angleX;
@@ -60,28 +68,28 @@ class FlxModel extends FlxObject3D {
 		mx[15] = 1.;
 
 		return mx;
+	}*/
+	public function getTransformMatrix():Float32Array {
+		return MatrixUtil.calculateTransform(this, mx);
 	}
 
-	public var meshes:Array<FlxMesh>;
+	public var meshes:Map<String, FlxMesh>;
 
 	/**
-	 * Data can be either a path, a haxe.io.Bytes class of the data or an existing FlxMesh instance.
+	 * Loads all meshes from the obj file.
 	**/
-	public function loadMesh(data:OneOfThree<String, haxe.io.Bytes, flixel3d.FlxMesh>, ?texture:FlxGraphicAsset, ?format:FlxMeshFormat):FlxModel {
-		// possibly add functionality to destroy previous meshes if they are not used?
-		meshes = [];
-		return addMesh(data, texture, format);
+	public function loadMeshes(source:String) {
+		meshes = FlxG3D.mesh.load(source);
+		return this;
 	}
 
-	public function addMesh(data:OneOfThree<String, haxe.io.Bytes, flixel3d.FlxMesh>, ?texture:FlxGraphicAsset, ?format:FlxMeshFormat) {
-		if (Std.isOfType(data, String)) {
-			meshes.push(FlxMesh.fromAssetKey(data, false, null, true, format));
-		} else if (Std.isOfType(data, haxe.io.Bytes)) { // loading from bytes is not properly implemented if at all, don't use this
-			meshes.push(FlxMesh.fromBytes(data, format));
-		} else {
-			meshes.push(data);
-		}
+	public function setMesh(id:String, data:flixel3d.FlxMesh) {
+		meshes.set(id, data);
 		return this;
+	}
+
+	public function getMesh(id:String) {
+		return meshes.get(id);
 	}
 
 	public override function update(elapsed:Float) {
