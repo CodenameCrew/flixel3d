@@ -38,13 +38,14 @@ class MatrixUtil {
 	}
 
 	public static function calculateTransform(obj:Flx3DObject, ?mx:Float32Array, ignorePosition:Bool = false):Float32Array {
-		return oldCalculateTransform(obj, mx, ignorePosition);
+		// return oldCalculateTransform(obj, mx, ignorePosition);
 		var matrix = new Matrix3D();
 		matrix.identity();
-		matrix.appendRotation(obj.angleX, new Vector3D(1, 0, 0));
 		matrix.appendRotation(obj.angleY, new Vector3D(0, 1, 0));
+		matrix.appendRotation(obj.angleX, new Vector3D(1, 0, 0));
 		matrix.appendRotation(obj.angleZ, new Vector3D(0, 0, 1));
-		matrix.appendTranslation(obj.x, obj.y, obj.z);
+		if (!ignorePosition)
+			matrix.appendTranslation(obj.x, obj.y, obj.z);
 
 		if (mx == null)
 			mx = new Float32Array(16);
@@ -69,7 +70,7 @@ class MatrixUtil {
 		}
 
 		for (i in 0...16) {
-			mx[i] = matrix.rawData[i];
+			mx[(i % 4) * 4 + Math.floor(i / 4)] = matrix.rawData[i];
 		}
 
 		/*trace("===== OLD MATRIX =====");
