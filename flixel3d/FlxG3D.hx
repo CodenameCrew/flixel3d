@@ -11,6 +11,7 @@ import lime.graphics.opengl.GL;
 /*
 	Global helper class, like FlxG, but for 3d-related properties such as mesh loading
  */
+@:deprecated("Use flixel3d.internal.Flx3DContext instead.")
 @:access(openfl.display3D.Context3D)
 class FlxG3D {
 	public static var context3D(get, null):Context3D;

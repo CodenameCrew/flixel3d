@@ -2,7 +2,10 @@ package flixel3d.shading;
 
 import lime.graphics.WebGLRenderContext;
 import lime.graphics.opengl.GLProgram;
+import openfl.Lib;
+import flixel3d.internal.Flx3DContext;
 
+@:haxe.warning("FlxShader3D will be reworked at a later stage.")
 @:access(openfl.display3D.Context3D)
 @:allow(flixel3d.render.ViewBitmap)
 class FlxShader3D {
@@ -58,6 +61,7 @@ class FlxShader3D {
 		uniform vec3 uCameraPosition;
 		uniform mat4 uViewTransform;
 		uniform mat4 uModelTransform;
+		uniform mat4 uPerspectiveTransform;
 
 		varying vec3 fColor;
 		varying vec2 fTexCoord;
@@ -76,6 +80,8 @@ class FlxShader3D {
 			projection[1] = vec4(0.,                    1./tan(fov/2.),   0.,                          0.);
 			projection[2] = vec4(0.,                    0.,              -((far+near)/(far-near)),   -((2.*far*near)/(far-near)));
 			projection[3] = vec4(0.,                    0.,              -1.,                         0.);
+			
+			//mat4 projection = uPerspectiveTransform;
 
 			mat4 model = uModelTransform; 
 
@@ -102,6 +108,7 @@ class FlxShader3D {
 
 	public function new(fragmentSource:String, vertexSource:String) {
 		uniforms = new Map<String, Dynamic>();
-		__glProgram = GLProgram.fromSources(FlxG3D.context3D.gl, vertexSource, fragmentSource);
+		var gl = Flx3DContext.context3D.gl;
+		__glProgram = GLProgram.fromSources(gl, vertexSource, fragmentSource);
 	}
 }

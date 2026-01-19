@@ -5,6 +5,7 @@ import flixel.util.FlxColor;
 import openfl.display.Bitmap;
 import flixel3d.render.ViewBitmapData;
 
+@:deprecated
 class ViewBitmap extends Bitmap {
 	private var __data:ViewBitmapData;
 

@@ -6,9 +6,8 @@ import haxe.exceptions.NotImplementedException;
 import flixel3d.loaders.BaseLoader;
 import flixel3d.loaders.ObjLoader;
 import flixel3d.system.Flx3DAssets.FlxMeshFormat;
-import flixel3d.FlxG3D;
+import flixel3d.internal.Flx3DContext;
 import haxe.io.UInt16Array;
-import flixel3d.FlxG3D;
 import lime.utils.DataPointer;
 import openfl.utils.ByteArray;
 import haxe.io.Float32Array;
@@ -19,7 +18,7 @@ import flixel.FlxBasic;
 import lime.graphics.WebGLRenderContext;
 import lime.utils.ArrayBufferView;
 import flixel3d.shading.FlxMaterial;
-import flixel3d.FlxTexture;
+import flixel3d.Flx3DTexture;
 import flixel.util.FlxDestroyUtil.IFlxDestroyable;
 
 typedef VertexAttribute = {
@@ -66,7 +65,7 @@ class FlxMeshData implements IFlxDestroyable {
 			var loadedMesh = loader.load(source);
 
 			loadedMesh.key = source; // key ?? source;
-			FlxG3D.mesh.addMesh(loadedMesh);
+			Flx3DContext.mesh.addMesh(loadedMesh);
 			return loadedMesh;
 		}
 
@@ -100,7 +99,7 @@ class FlxMeshData implements IFlxDestroyable {
 	}
 
 	private static function __createArrayBuffer(data:ArrayBufferView):GLBuffer {
-		var gl:WebGLRenderContext = FlxG3D.gl;
+		var gl:WebGLRenderContext = Flx3DContext.gl;
 		var buffer = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
 		gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
@@ -108,7 +107,7 @@ class FlxMeshData implements IFlxDestroyable {
 	}
 
 	private static function __createElementArrayBuffer(data:ArrayBufferView):GLBuffer {
-		var gl:WebGLRenderContext = FlxG3D.gl;
+		var gl:WebGLRenderContext = Flx3DContext.gl;
 		var buffer = gl.createBuffer();
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
 		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW);

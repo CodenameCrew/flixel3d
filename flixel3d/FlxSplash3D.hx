@@ -115,7 +115,7 @@ class FlxSplash3D extends FlxState {
 		dtf.align = TextFormatAlign.CENTER;
 		_text.defaultTextFormat = dtf;
 		_text.text = "HaxeFlixel";
-		FlxG.stage.addChild(_text);
+		//FlxG.stage.addChild(_text);
 
 		onResize(stageWidth, stageHeight);
 
@@ -163,10 +163,10 @@ class FlxSplash3D extends FlxState {
 			// Make the logo a tad bit longer, so our users fully appreciate our hard work :D
 			// FlxTween.tween(haxeModel, {angleY: 427.5}, 1.0, {ease: FlxEase.smootherStepOut});
 			FlxTween.tween(cam3D.transform, {y: 1.1, angleX: -12.5}, 1.0, {ease: FlxEase.smootherStepOut});
-			haxeModel.angularVelocity3D.y = 1900;
+			//haxeModel.angularVelocity3D.y = 1900;
 			FlxTween.tween(haxeModel.angularVelocity3D, {y: 0}, 1.0, {ease: FlxEase.smootherStepOut});
-
-			FlxTween.tween(cam3D, {alpha: 0}, 2.0, {startDelay: 1.0, ease: FlxEase.quadOut, onComplete: onComplete});
+			haxeModel.angleY = Math.PI / 4;
+			//FlxTween.tween(cam3D, {alpha: 0}, 2.0, {startDelay: 1.0, ease: FlxEase.quadOut, onComplete: onComplete});
 			FlxTween.tween(_text, {alpha: 0}, 2.0, {startDelay: 1.0, ease: FlxEase.quadOut});
 		} else if (_curPart == 4) {
 			_text.text = "HaxeFlixel3";

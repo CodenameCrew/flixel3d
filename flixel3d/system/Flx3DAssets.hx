@@ -9,7 +9,7 @@ import flixel.graphics.FlxGraphic;
 import openfl.display.BitmapData;
 
 typedef FlxMeshAsset = OneOfTwo<String, Bytes>;
-typedef FlxTextureAsset = OneOfFour<FlxGraphic, BitmapData, String, FlxTexture>;
+typedef Flx3DTextureAsset = OneOfFour<FlxGraphic, BitmapData, String, Flx3DTexture>;
 
 /**
  * Enum representing a model format.

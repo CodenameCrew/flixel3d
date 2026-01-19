@@ -4,7 +4,7 @@ import flixel.FlxObject;
 import flixel3d.math.FlxPoint3D;
 import flixel.math.FlxVelocity;
 
-class FlxObject3D extends FlxObject {
+class Flx3DObject extends FlxObject {
 	// Angular velocity
 	public var angularVelocity3D:FlxPoint3D = new FlxPoint3D();
 	public var angularMaxVelocity3D:FlxPoint3D = new FlxPoint3D();

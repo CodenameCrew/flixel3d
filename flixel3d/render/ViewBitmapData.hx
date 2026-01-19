@@ -5,21 +5,23 @@ import openfl.display3D.textures.RectangleTexture;
 import lime.graphics.opengl.GLProgram;
 import lime.graphics.opengl.GLUniformLocation;
 import lime.graphics.WebGLRenderContext;
-import flixel3d.FlxG3D;
+import flixel3d.internal.Flx3DContext;
 import openfl.display.BitmapData;
 import lime.graphics.opengl.GL;
+import openfl.Lib;
 
 // glGet(GL_DRAW_FRAMEBUFFER_BINDING)
 
 /**
  * ViewBitmapData represents the texture which is used as the render target
 **/
+@:deprecated("Use flixel3d.views.Flx3DViewBuffer instead")
 @:access(openfl.display3D.textures.TextureBase)
 @:access(openfl.display3D.Context3D)
 @:access(flixel3d.FlxMeshData)
 @:access(flixel3d.shading.FlxMaterial)
 @:access(flixel3d.shading.FlxShader3D)
-@:access(flixel3d.FlxTexture)
+@:access(flixel3d.Flx3DTexture)
 class ViewBitmapData extends BitmapData {
 	var __renderTarget:RectangleTexture;
 
@@ -33,17 +35,20 @@ class ViewBitmapData extends BitmapData {
 	public function resize(width:Int, height:Int) {
 		if (__texture != null)
 			__texture.dispose();
-		__texture = FlxG3D.context3D.createRectangleTexture(width, height, BGRA, true);
+		var ctx = Flx3DContext.context3D;
+		__texture = ctx.createRectangleTexture(width, height, BGRA, true);
 		__textureContext = __texture.__textureContext;
 	}
 
 	public function setRenderToTexture() {
-		FlxG3D.context3D.setRenderToTexture(__texture);
+		var ctx = Flx3DContext.context3D;
+		ctx.setRenderToTexture(__texture);
 	}
 
 	private function flush() {
-		FlxG3D.context3D.__flushGLFramebuffer();
-		FlxG3D.context3D.__flushGLViewport();
+		var ctx = Flx3DContext.context3D;
+		ctx.__flushGLFramebuffer();
+		ctx.__flushGLViewport();
 	}
 
 	private function clear(gl:WebGLRenderContext, color:FlxColor) {
@@ -57,7 +62,8 @@ class ViewBitmapData extends BitmapData {
 	}
 
 	public function setRenderToBackBuffer() {
-		FlxG3D.context3D.setRenderToBackBuffer();
+		var ctx = Flx3DContext.context3D;
+		ctx.setRenderToBackBuffer();
 	}
 
 	var capabilities:Array<Int> = [GL.BLEND, GL.DEPTH_TEST, GL.TEXTURE_2D];
@@ -66,7 +72,7 @@ class ViewBitmapData extends BitmapData {
 
 	public function render(models:Array<FlxModel>, camera:FlxCamera3D) {
 		var clearColor = camera.bgColor;
-		var gl:WebGLRenderContext = FlxG3D.gl;
+		var gl:WebGLRenderContext = Flx3DContext.gl;
 		setRenderToTexture();
 		flush();
 
@@ -100,7 +106,7 @@ class ViewBitmapData extends BitmapData {
 					}
 				} else {
 					gl.activeTexture(gl.TEXTURE0);
-					gl.bindTexture(gl.TEXTURE_2D, FlxTexture.defaultTexture.__glTexture);
+					gl.bindTexture(gl.TEXTURE_2D, Flx3DTexture.defaultTexture.__glTexture);
 				}
 				// Shader
 				var uCameraPosition = gl.getUniformLocation(program, "uCameraPosition");

@@ -5,7 +5,7 @@ import openfl.display3D.textures.RectangleTexture;
 import lime.graphics.opengl.GLProgram;
 import lime.graphics.opengl.GLUniformLocation;
 import lime.graphics.WebGLRenderContext;
-import flixel3d.FlxG3D;
+import flixel3D.internal.Flx3DContext;
 import openfl.display.BitmapData;
 import lime.graphics.opengl.GL;
 
@@ -13,19 +13,19 @@ class ViewBitmap extends Bitmap {
 	private var __texture:RectangleTexture;
 
 	public function new(width:Int, height:Int) {
-		__texture = FlxG3D.context3D.createRectangleTexture(width, height, BGRA, true);
+		__texture = Flx3DContext.context3D.createRectangleTexture(width, height, BGRA, true);
 		var data = BitmapData.fromTexture(__texture);
 		super(data);
 	}
 
 	public function setRenderToTexture() {
-		FlxG3D.context3D.setRenderToTexture(__texture);
+		Flx3DContext.context3D.setRenderToTexture(__texture);
 	}
 
 	@:access(openfl.display3D.Context3D)
 	private function flush() {
-		FlxG3D.context3D.__flushGLFramebuffer();
-		FlxG3D.context3D.__flushGLViewport();
+		Flx3DContext.context3D.__flushGLFramebuffer();
+		Flx3DContext.context3D.__flushGLViewport();
 	}
 
 	private function clear(gl:WebGLRenderContext) {
@@ -39,7 +39,7 @@ class ViewBitmap extends Bitmap {
 	}
 
 	public function setRenderToBackBuffer() {
-		FlxG3D.context3D.setRenderToBackBuffer();
+		Flx3DContext.context3D.setRenderToBackBuffer();
 	}
 
 	var capabilities:Array<Int> = [GL.BLEND, GL.DEPTH_TEST, GL.TEXTURE_2D];
@@ -48,7 +48,7 @@ class ViewBitmap extends Bitmap {
 
 	@:access(flixel3d.FlxMesh)
 	public function render(models:Array<FlxModel>) {
-		var gl:WebGLRenderContext = FlxG3D.gl;
+		var gl:WebGLRenderContext = Flx3DContext.gl;
 		setRenderToTexture();
 		flush();
 

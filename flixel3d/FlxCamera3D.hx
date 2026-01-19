@@ -14,10 +14,11 @@ import lime.utils.Float32Array;
 import flixel3d.math.MatrixUtil;
 import openfl.display.Sprite;
 
+@:deprecated("Use Flx3DViewSprite/Flx3DViewBuffer.camera instead")
 @:access(flixel3d.render.ViewBitmap) class FlxCamera3D extends FlxCamera {
 	private var __supersampling:FlxSupersampling;
 
-	public var transform(default, null):FlxObject3D;
+	public var transform(default, null):Flx3DObject;
 	public var supersampling(get, set):FlxSupersampling;
 	public var supersamplingFilter:SSAAShader;
 
@@ -58,7 +59,7 @@ import openfl.display.Sprite;
 		canvas.addChild(__bitmap3D);
 	}
 
-	public function new(x:Float = 0, y:Float = 0, width:Int = 0, height:Int = 0, fov:Float = 90) {
+	public function new(x:Int = 0, y:Int = 0, width:Int = 0, height:Int = 0, fov:Float = 90) {
 		super(x, y, width, height, zoom);
 		this.fov = fov;
 		__renderQueue = new Array<FlxModel>();
@@ -70,7 +71,7 @@ import openfl.display.Sprite;
 		// __bitmap3DFilter.addChild(__bitmap3D);
 		canvas.addChild(__bitmap3D);
 
-		transform = new FlxObject3D();
+		transform = new Flx3DObject();
 		// FlxG.addChildBelowMouse(__bitmap3D);
 		// var test = new Bitmap(new BitmapData(1280, 720, true, 0xFF0000FF));
 		// flashSprite.addChild(test);

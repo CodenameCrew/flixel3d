@@ -6,7 +6,7 @@ import lime.graphics.opengl.GLTexture;
 import lime.graphics.Image;
 import openfl.Assets;
 import flixel.util.FlxDestroyUtil.IFlxDestroyable;
-
+import flixel3d.internal.Flx3DContext;
 /*var view = new lime.utils.UInt8Array(4);
 	view[0] = 246;
 	view[1] = 136;
@@ -21,13 +21,14 @@ import flixel.util.FlxDestroyUtil.IFlxDestroyable;
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
  */
-class FlxTexture implements IFlxDestroyable {
-	private static var cache:Map<String, FlxTexture>;
+@:deprecated("May be replaced in the future")
+class Flx3DTexture implements IFlxDestroyable {
+	private static var cache:Map<String, Flx3DTexture>;
 
-	public static var defaultTexture:FlxTexture;
+	public static var defaultTexture:Flx3DTexture;
 
 	private function new() {
-		cache = new Map<String, FlxTexture>();
+		cache = new Map<String, Flx3DTexture>();
 	}
 
 	private var __glTexture:GLTexture;
@@ -47,10 +48,10 @@ class FlxTexture implements IFlxDestroyable {
 	}
 
 	public static function fromImage(image:Image, ?key:String) {
-		var tex = new FlxTexture();
+		var tex = new Flx3DTexture();
 		image.format = PixelFormat.RGBA32;
 
-		var gl = FlxG3D.gl;
+		var gl = Flx3DContext.gl;
 		tex.__glTexture = gl.createTexture();
 		gl.bindTexture(gl.TEXTURE_2D, tex.__glTexture);
 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, image.width, image.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, image.data);
@@ -67,7 +68,7 @@ class FlxTexture implements IFlxDestroyable {
 	}
 
 	public function destroy() {
-		var gl = FlxG3D.gl;
+		var gl = Flx3DContext.gl;
 		gl.deleteTexture(__glTexture);
 	}
 }

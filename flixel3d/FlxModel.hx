@@ -13,16 +13,17 @@ import flixel3d.system.Flx3DAssets.FlxMeshFormat;
 import lime.utils.Float32Array;
 import flixel.util.FlxColor;
 import flixel3d.math.MatrixUtil;
+import flixel3d.views.Flx3DViewBuffer;
 
 /**
  * This is a sprite which renders a single 3d model,
  * if combined with the FlxScene class, it can be used to render multiple models at once.
  * This class makes it so you can render a single object and layer it on top of another object.
  * FlxModels do not appear on regular `FlxCamera`s, only `FlxCamera3D`s.
- *
- * Dev note: im not sure if i should use FlxSprite or FlxBasic here
 **/
-class FlxModel extends FlxObject3D {
+@:access(flixel3d.views.Flx3DViewBuffer)
+class FlxModel extends Flx3DObject {
+	private var views:Array<Flx3DViewBuffer>;
 	private var mx:Float32Array;
 
 	public var color:FlxColor = 0xFFFFFFFF;
@@ -31,6 +32,7 @@ class FlxModel extends FlxObject3D {
 		meshes = [];
 		mx = new Float32Array(16);
 		super(x, y, z);
+		views = new Array<Flx3DViewBuffer>();
 	}
 
 	public function forEachMesh(func:(name:String, mesh:FlxMesh) -> Void) {
@@ -97,11 +99,8 @@ class FlxModel extends FlxObject3D {
 	}
 
 	public override function draw() {
-		for (cam in cameras) {
-			if (Std.isOfType(cam, FlxCamera3D)) {
-				var cam3D:FlxCamera3D = cast cam;
-				cam3D.addToRenderQueue(this);
-			}
+		for (view in views) {
+			view.addToRenderQueue(this);
 		}
 	}
 }

@@ -1,13 +1,18 @@
 package flixel3d;
 
+import haxe.exceptions.NotImplementedException;
+
 /**
  * A surface is a 2D plane that can be used to put FlxSprites on.
  * The collection is like a FlxGroup.
 **/
-class FlxSurface {
+@:haxe.warning("This class is not implemented and will throw a NotImplementedException if created.")
+class Flx3DSurface {
 	public var members:Array<FlxSprite>;
 
-	public function new() {}
+	public function new() {
+		throw new NotImplementedException();
+	}
 
 	public function add(sprite:FlxSprite) {
 		members.push(sprite);
