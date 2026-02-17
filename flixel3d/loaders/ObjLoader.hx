@@ -1,6 +1,6 @@
 package flixel3d.loaders;
 
-import flixel3d.FlxMeshData.VertexAttribute;
+import flixel3d.Flx3DMeshData.VertexAttribute;
 import haxe.io.Eof;
 import haxe.exceptions.NotImplementedException;
 import flixel.util.typeLimit.OneOfTwo;
@@ -37,10 +37,10 @@ class ObjLoader extends BaseLoader {
 			/*case "#": // comment
 				case "mtllib": // the file wth material data
 				case "o": // idk what this is, probably the name of the object? */
-			case "o": // new FlxMeshData with name
+			case "o": // new Flx3DMeshData with name
 				if (!firstMesh) {
 					// var attributes:Array<VertexAttribute> = [{name: "vPosition", count: 3}, {name: "vTexCoord", count: 2}];
-					meshes.set(curName, FlxMeshData.fromArray(vertexArray, elementArray, []));
+					meshes.set(curName, Flx3DMeshData.fromArray(vertexArray, elementArray, []));
 					// faceOffsetVertex += vertexCoords.length;
 					// faceOffsetTexture += textureCoords.length;
 					elementOffset += elementArray.length;
@@ -135,7 +135,7 @@ class ObjLoader extends BaseLoader {
 		}
 	}
 
-	public override function load(data:OneOfTwo<String, haxe.io.Bytes>):Map<String, FlxMeshData> {
+	public override function load(data:OneOfTwo<String, haxe.io.Bytes>):Map<String, Flx3DMeshData> {
 		super.load(data);
 
 		try {
@@ -147,7 +147,7 @@ class ObjLoader extends BaseLoader {
 			parseLine("o end");
 		}
 
-		// meshes.set("lol", FlxMeshData.fromArray(vertexArray, elementArray, [])); // return FlxMeshData.fromArray(vertexArray, elementArray);
+		// meshes.set("lol", Flx3DMeshData.fromArray(vertexArray, elementArray, [])); // return Flx3DMeshData.fromArray(vertexArray, elementArray);
 
 		return meshes;
 	}

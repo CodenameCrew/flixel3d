@@ -1,29 +1,44 @@
 package flixel3d;
 
+import lime.utils.Float32Array;
+import flixel3d.math.Flx3DEuler;
 import flixel.FlxObject;
-import flixel3d.math.FlxPoint3D;
+import flixel3d.math.Flx3DPoint;
 import flixel.math.FlxVelocity;
+import flixel3d.math.Flx3DRotation;
+import openfl.geom.Matrix3D;
+import openfl.geom.Vector3D;
 
 class Flx3DObject extends FlxObject {
+	private var _ignorePosition:Bool = false;
+	private var _matrix:Matrix3D = new Matrix3D();
+	private var _rawMatrix:Float32Array = new Float32Array(16);
+	private var _rotation:Flx3DRotation = new Flx3DRotation();
+
 	// Angular velocity
-	public var angularVelocity3D:FlxPoint3D = new FlxPoint3D();
-	public var angularMaxVelocity3D:FlxPoint3D = new FlxPoint3D();
-	public var angularAcceleration3D:FlxPoint3D = new FlxPoint3D();
-	public var angularDrag3D:FlxPoint3D = new FlxPoint3D();
+	public var angularVelocity3D:Flx3DPoint = new Flx3DPoint();
+	public var angularMaxVelocity3D:Flx3DPoint = new Flx3DPoint();
+	public var angularAcceleration3D:Flx3DPoint = new Flx3DPoint();
+	public var angularDrag3D:Flx3DPoint = new Flx3DPoint();
 
 	// Normal velocity
-	public var velocity3D:FlxPoint3D = new FlxPoint3D();
-	public var maxVelocity3D:FlxPoint3D = new FlxPoint3D();
-	public var acceleration3D:FlxPoint3D = new FlxPoint3D();
-	public var drag3D:FlxPoint3D = new FlxPoint3D();
+	public var velocity3D:Flx3DPoint = new Flx3DPoint();
+	public var maxVelocity3D:Flx3DPoint = new Flx3DPoint();
+	public var acceleration3D:Flx3DPoint = new Flx3DPoint();
+	public var drag3D:Flx3DPoint = new Flx3DPoint();
 
 	public var z:Float;
 	public var depth:Float;
 
 	// Angle
-	public var angleX:Float;
-	public var angleY:Float;
-	public var angleZ:Float;
+	public var angleX(get, set):Float;
+	public var angleY(get, set):Float;
+	public var angleZ(get, set):Float;
+
+	public var quaternionX(get, set):Float;
+	public var quaternionY(get, set):Float;
+	public var quaternionZ(get, set):Float;
+	public var quaternionW(get, set):Float;
 
 	public function new(x:Float = 0, y:Float = 0, z:Float = 0, width:Float = 0, height:Float = 0, depth:Float = 0) {
 		this.z = z;
@@ -77,5 +92,107 @@ class Flx3DObject extends FlxObject {
 		var deltaZ = velocity3D.z * elapsed;
 		velocity3D.z += velocityDelta;
 		z += deltaZ;
+	}
+
+	/*
+		var order = [0, 1, 2];
+		for (v in order) {
+			switch (v) {
+				case 0: _matrix.appendRotation(angleY, new Vector3D(0, 1, 0));
+				case 1: _matrix.appendRotation(-angleX, new Vector3D(1, 0, 0));
+				case 2: _matrix.appendRotation(-angleZ, new Vector3D(0, 0, 1));
+			}
+		}
+	 */
+	@:noCompletion public function getTransformMatrix():Float32Array {
+		_matrix.identity();
+
+		_matrix.appendRotation(angleY, new Vector3D(0, 1, 0));
+		_matrix.appendRotation(-angleX, new Vector3D(1, 0, 0));
+		_matrix.appendRotation(-angleZ, new Vector3D(0, 0, 1));
+
+		if (!_ignorePosition) // this is mainly used for the camera
+			_matrix.appendTranslation(x, y, z);
+
+		// convert OpenFL matrix to Float32Array
+		var p = 0;
+		for (i in 0...16) {
+			_rawMatrix[p] = _matrix.rawData[i];
+			p += 4;
+			if (p >= 16) {
+				p -= 15;
+			}
+		}
+		return _rawMatrix;
+	}
+
+	public inline function get_angleX():Float {
+		_rotation.convert(Flx3DRotationType.EULER);
+		return _rotation.euler.x;
+	}
+
+	public inline function set_angleX(value:Float):Float {
+		_rotation.convert(Flx3DRotationType.EULER);
+		return _rotation.euler.x = value;
+	}
+
+	public inline function get_angleY():Float {
+		_rotation.convert(Flx3DRotationType.EULER);
+		return _rotation.euler.y;
+	}
+
+	public inline function set_angleY(value:Float):Float {
+		_rotation.convert(Flx3DRotationType.EULER);
+		return _rotation.euler.y = value;
+	}
+
+	public inline function get_angleZ():Float {
+		_rotation.convert(Flx3DRotationType.EULER);
+		return _rotation.euler.z;
+	}
+
+	public inline function set_angleZ(value:Float):Float {
+		_rotation.convert(Flx3DRotationType.EULER);
+		return _rotation.euler.z = value;
+	}
+
+	public inline function get_quaternionX():Float {
+		_rotation.convert(Flx3DRotationType.QUATERNION);
+		return _rotation.quaternion.x;
+	}
+
+	public inline function set_quaternionX(value:Float):Float {
+		_rotation.convert(Flx3DRotationType.QUATERNION);
+		return _rotation.quaternion.x = value;
+	}
+
+	public inline function get_quaternionY():Float {
+		_rotation.convert(Flx3DRotationType.QUATERNION);
+		return _rotation.quaternion.y;
+	}
+
+	public inline function set_quaternionY(value:Float):Float {
+		_rotation.convert(Flx3DRotationType.QUATERNION);
+		return _rotation.quaternion.y = value;
+	}
+
+	public inline function get_quaternionZ():Float {
+		_rotation.convert(Flx3DRotationType.QUATERNION);
+		return _rotation.quaternion.z;
+	}
+
+	public inline function set_quaternionZ(value:Float):Float {
+		_rotation.convert(Flx3DRotationType.QUATERNION);
+		return _rotation.quaternion.z = value;
+	}
+
+	public inline function get_quaternionW():Float {
+		_rotation.convert(Flx3DRotationType.QUATERNION);
+		return _rotation.quaternion.w;
+	}
+
+	public inline function set_quaternionW(value:Float):Float {
+		_rotation.convert(Flx3DRotationType.QUATERNION);
+		return _rotation.quaternion.w = value;
 	}
 }

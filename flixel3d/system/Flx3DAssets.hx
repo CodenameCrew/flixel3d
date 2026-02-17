@@ -8,14 +8,14 @@ import flixel.util.typeLimit.OneOfFour;
 import flixel.graphics.FlxGraphic;
 import openfl.display.BitmapData;
 
-typedef FlxMeshAsset = OneOfTwo<String, Bytes>;
+typedef Flx3DMeshAsset = OneOfTwo<String, Bytes>;
 typedef Flx3DTextureAsset = OneOfFour<FlxGraphic, BitmapData, String, Flx3DTexture>;
 
 /**
  * Enum representing a model format.
  * Currently the only suppported format is Wavefront OBJ.
  */
-enum FlxMeshFormat {
+enum Flx3DMeshFormat {
 	OBJ;
 	FBX;
 	RAW;

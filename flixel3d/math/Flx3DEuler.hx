@@ -2,11 +2,11 @@ package flixel3d.math;
 
 import flixel.math.FlxMath;
 
-class FlxEuler {
+class Flx3DEuler {
+	private var parent:Flx3DRotation;
+
 	public function new(x:Float = 0, y:Float = 0, z:Float = 0) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
+		set(x, y, z);
 	}
 
 	public function set(x:Float, y:Float, z:Float) {
@@ -15,9 +15,9 @@ class FlxEuler {
 		this.z = z;
 	}
 
-	public var x:Float;
-	public var y:Float;
-	public var z:Float;
+	public var x:Float = 0;
+	public var y:Float = 0;
+	public var z:Float = 0;
 
 	/**
 	 * Alias for x
@@ -34,36 +34,36 @@ class FlxEuler {
 	**/
 	public var roll(get, set):Float;
 
-	@:noCompletion public function get_pitch() {
+	@:noCompletion public inline function get_pitch() {
 		return x;
 	}
 
-	@:noCompletion public function get_yaw() {
+	@:noCompletion public inline function get_yaw() {
 		return y;
 	}
 
-	@:noCompletion public function get_roll() {
+	@:noCompletion public inline function get_roll() {
 		return z;
 	}
 
-	@:noCompletion public function set_pitch(value:Float) {
+	@:noCompletion public inline function set_pitch(value:Float) {
 		return x = value;
 	}
 
-	@:noCompletion public function set_yaw(value:Float) {
+	@:noCompletion public inline function set_yaw(value:Float) {
 		return y = value;
 	}
 
-	@:noCompletion public function set_roll(value:Float) {
+	@:noCompletion public inline function set_roll(value:Float) {
 		return z = value;
 	}
 
 	/**
-	 * Converts FlxEuler into an FlxQuaternion.
+	 * Converts Flx3DEuler into an Flx3DQuaternion.
 	**/
-	public function toQuaternion(?quaternion:FlxQuaternion):FlxQuaternion {
+	public function toQuaternion(?quaternion:Flx3DQuaternion):Flx3DQuaternion {
 		if (quaternion == null)
-			quaternion = new FlxQuaternion();
+			quaternion = new Flx3DQuaternion();
 
 		var cr:Float = Math.cos(roll * 0.5);
 		var sr:Float = Math.sin(roll * 0.5);
@@ -83,9 +83,9 @@ class FlxEuler {
 	/**
 	 * Same as toQuaternion, except it uses Flixel's fastSin and fastCos methods, making it faster but slightly less accurate.
 	**/
-	public function toQuaternionFast(?quaternion:FlxQuaternion):FlxQuaternion {
+	public function toQuaternionFast(?quaternion:Flx3DQuaternion):Flx3DQuaternion {
 		if (quaternion == null)
-			quaternion = new FlxQuaternion();
+			quaternion = new Flx3DQuaternion();
 
 		var cr:Float = FlxMath.fastCos(roll * 0.5);
 		var sr:Float = FlxMath.fastSin(roll * 0.5);

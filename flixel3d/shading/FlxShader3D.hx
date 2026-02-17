@@ -41,7 +41,7 @@ class FlxShader3D {
 			//float depth = (gl_FragCoord.z + 5.0) * 0.01; //0.01;
 			//FragColor = vec4(vec3(depth), 1.0);
 			//fragColor = vec4(texture(bitmap, fTexCoord).rgb * depth, 1.0); //vec4(fColor * gl_FragCoord.z, 1.0); //0.5 * (1. + sin(iTime))
-			gl_FragColor = texture2D(bitmap, fTexCoord) * uColor * uModelColor * vec4(fColor, 1.);
+			gl_FragColor = texture2D(bitmap, fTexCoord) * uColor * vec4(fColor, 1.);
 		}
 
 	";

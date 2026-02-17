@@ -5,7 +5,7 @@ import flixel.util.FlxColor;
 import haxe.exceptions.NotImplementedException;
 import flixel3d.loaders.BaseLoader;
 import flixel3d.loaders.ObjLoader;
-import flixel3d.system.Flx3DAssets.FlxMeshFormat;
+import flixel3d.system.Flx3DAssets.Flx3DMeshFormat;
 import flixel3d.internal.Flx3DContext;
 import haxe.io.UInt16Array;
 import lime.utils.DataPointer;
@@ -27,9 +27,9 @@ typedef VertexAttribute = {
 }
 
 /**
- * This is a mesh containing the data used to render an FlxModel.
+ * This is a mesh containing the data used to render an Flx3DModel.
 **/
-class FlxMeshData implements IFlxDestroyable {
+class Flx3DMeshData implements IFlxDestroyable {
 	private var __instanceCount:UInt; // for use in renderer
 
 	public var key:String = "";
@@ -50,16 +50,16 @@ class FlxMeshData implements IFlxDestroyable {
 		attributes = new Array<VertexAttribute>();
 	}
 
-	public function makeUnique():FlxMeshData {
+	public function makeUnique():Flx3DMeshData {
 		throw new NotImplementedException();
 	}
 
-	/*public static function fromAssetKey(source:String, unique:Bool = false, ?key:String, cache:Bool = true, ?format:FlxMeshFormat):FlxMeshData {
+	/*public static function fromAssetKey(source:String, unique:Bool = false, ?key:String, cache:Bool = true, ?format:Flx3DMeshFormat):Flx3DMeshData {
 			if (format == null)
 				format = getFormatFromExtension(source);
 			var loader:BaseLoader;
 			switch (format) {
-				case FlxMeshFormat.OBJ: loader = new ObjLoader();
+				case Flx3DMeshFormat.OBJ: loader = new ObjLoader();
 				default: throw new NotImplementedException("Wavefront OBJ (.obj) is currently the only supported model format.");
 			}
 			var loadedMesh = loader.load(source);
@@ -69,11 +69,11 @@ class FlxMeshData implements IFlxDestroyable {
 			return loadedMesh;
 		}
 
-		public static function fromBytes(data:haxe.io.Bytes, format:FlxMeshFormat, unique:Bool = false, ?key:String, cache:Bool = true):FlxMeshData {
+		public static function fromBytes(data:haxe.io.Bytes, format:Flx3DMeshFormat, unique:Bool = false, ?key:String, cache:Bool = true):Flx3DMeshData {
 			throw new NotImplementedException();
 	}*/
-	public static function fromArray(vertexData:Array<Float>, elementData:Array<UInt>, attributes:Array<VertexAttribute>):FlxMeshData {
-		var mesh = new FlxMeshData();
+	public static function fromArray(vertexData:Array<Float>, elementData:Array<UInt>, attributes:Array<VertexAttribute>):Flx3DMeshData {
+		var mesh = new Flx3DMeshData();
 
 		mesh.__vertexBuffer = __createArrayBuffer(__haxeArrayToFloat32Array(vertexData));
 		mesh.__elementBuffer = __createElementArrayBuffer(__haxeArrayToUInt16Array(elementData));

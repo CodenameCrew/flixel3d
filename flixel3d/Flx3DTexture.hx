@@ -7,6 +7,7 @@ import lime.graphics.Image;
 import openfl.Assets;
 import flixel.util.FlxDestroyUtil.IFlxDestroyable;
 import flixel3d.internal.Flx3DContext;
+
 /*var view = new lime.utils.UInt8Array(4);
 	view[0] = 246;
 	view[1] = 136;
@@ -25,7 +26,14 @@ import flixel3d.internal.Flx3DContext;
 class Flx3DTexture implements IFlxDestroyable {
 	private static var cache:Map<String, Flx3DTexture>;
 
-	public static var defaultTexture:Flx3DTexture;
+	private static var _defaultTexture:Flx3DTexture = null;
+	public static var defaultTexture(get, never):Flx3DTexture;
+
+	public static function get_defaultTexture() {
+		if (_defaultTexture == null)
+			_defaultTexture = Flx3DTexture.fromBitmapData(new BitmapData(1, 1, 0xFFFFFFFF)); // FlxColor.fromRGB(246, 136, 31)
+		return _defaultTexture;
+	}
 
 	private function new() {
 		cache = new Map<String, Flx3DTexture>();

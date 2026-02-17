@@ -1,15 +1,15 @@
-package flixel3d.views;
+package flixel3d;
 
 import flixel3d.Flx3DCamera;
 import flixel.FlxSprite;
-import flixel3d.views.Flx3DViewBuffer;
+import flixel3d.render.Flx3DRenderBuffer;
 import flixel.FlxBasic;
 import flixel.util.FlxSignal.FlxTypedSignal;
 import flixel.group.FlxGroup.FlxTypedGroupIterator;
 import flixel.util.FlxSort;
 
-class Flx3DViewSprite extends FlxSprite {
-	private var buffer:Flx3DViewBuffer;
+class Flx3DScene extends FlxSprite {
+	private var buffer:Flx3DRenderBuffer;
 
 	public var camera3D(get, set):Flx3DCamera;
 
@@ -23,7 +23,7 @@ class Flx3DViewSprite extends FlxSprite {
 
 	public function new(x:Float = 0, y:Float = 0, width:Int = -1, height:Int = -1) {
 		super(x, y);
-		buffer = new Flx3DViewBuffer(width, height);
+		buffer = new Flx3DRenderBuffer(width, height);
 		loadGraphic(buffer);
 	}
 

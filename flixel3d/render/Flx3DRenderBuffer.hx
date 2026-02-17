@@ -1,6 +1,6 @@
-package flixel3d.views;
+package flixel3d.render;
 
-import haxe.macro.Expr.Access;
+import flixel.FlxG;
 import haxe.exceptions.NotImplementedException;
 import flixel.util.FlxColor;
 import openfl.display3D.textures.RectangleTexture;
@@ -20,16 +20,16 @@ import flixel.group.FlxGroup.FlxTypedGroupIterator;
 import flixel.util.FlxArrayUtil;
 
 /**
- * Flx3DViewBuffer represents the texture which is used as the render target
+ * Flx3DRenderBuffer represents the texture which is used as the render target
 **/
 @:access(openfl.display3D.textures.TextureBase)
 @:access(openfl.display3D.Context3D)
-@:access(flixel3d.FlxMeshData)
+@:access(flixel3d.Flx3DMeshData)
 @:access(flixel3d.shading.FlxMaterial)
 @:access(flixel3d.shading.FlxShader3D)
 @:access(flixel3d.Flx3DTexture)
-@:access(flixel3d.FlxModel)
-class Flx3DViewBuffer extends BitmapData {
+@:access(flixel3d.Flx3DModel)
+class Flx3DRenderBuffer extends BitmapData {
 	public var camera3D:Flx3DCamera;
 
 	var __renderTarget:RectangleTexture;
@@ -39,12 +39,16 @@ class Flx3DViewBuffer extends BitmapData {
 
 	private var depthFunc:Int;
 
-	private var _renderQueue:Array<FlxModel>;
+	private var _renderQueue:Array<Flx3DModel>;
 
 	/**
 	 * @param   maxSize   Maximum amount of members allowed.
 	 */
 	public function new(width:Int, height:Int, maxSize:Int = 0) {
+		if (width < 0)
+			width = FlxG.width;
+		if (height < 0)
+			height = FlxG.height;
 		super(width, height, true, 0);
 		readable = false;
 		image = null;
@@ -55,7 +59,7 @@ class Flx3DViewBuffer extends BitmapData {
 		depthFunc = gl.LESS;
 
 		_group = new FlxGroup(maxSize);
-		_renderQueue = new Array<FlxModel>();
+		_renderQueue = new Array<Flx3DModel>();
 
 		camera3D = new Flx3DCamera();
 	}
@@ -77,7 +81,7 @@ class Flx3DViewBuffer extends BitmapData {
 		__textureHeight = height;
 	}
 
-	public function addToRenderQueue(model:FlxModel) {
+	public function addToRenderQueue(model:Flx3DModel) {
 		_renderQueue.push(model);
 	}
 
@@ -111,43 +115,27 @@ class Flx3DViewBuffer extends BitmapData {
 		throw new NotImplementedException();
 	}
 
-	public function render() {
-		drawGroup();
-
-		var clearColor = 0xFF00000; // camera.bgColor;
-		var gl:WebGLRenderContext = Flx3DContext.gl;
-		setRenderToTexture();
-		flush();
-
-		var maxTextureUnits:Int = gl.getParameter(gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS);
-		var preRenderCaps = [for (cap in capabilities) gl.isEnabled(cap)];
-		var depthFuncOld = gl.getParameter(gl.DEPTH_FUNC);
-		for (cap in capabilities)
-			gl.enable(cap);
-
-		gl.depthMask(false);
-		gl.depthFunc(depthFunc);
-
-		// Clear
-		clearGL(gl, clearColor);
-
+	private function _renderModels(gl:WebGLRenderContext) {
 		for (model in _renderQueue) {
 			for (mesh in model.meshes) {
-				var program:GLProgram = mesh.material.__shader.__glProgram;
-				gl.useProgram(program);
-				if (mesh.material.textures.length != 0) {
-					for (i in 0...mesh.material.textures.length) {
-						if (i < maxTextureUnits) {
-							gl.activeTexture(gl.TEXTURE0 + i);
-							gl.bindTexture(gl.TEXTURE_2D, mesh.material.textures[i].__glTexture);
-						}
-					}
-				} else {
-					gl.activeTexture(gl.TEXTURE0);
-					gl.bindTexture(gl.TEXTURE_2D, Flx3DTexture.defaultTexture.__glTexture);
-				}
+				/*var program:GLProgram = mesh.material.__shader.__glProgram;
+					gl.useProgram(program);
 
-				// Shader
+					// Shader
+					mesh.material.applyUniforms(gl);
+					if (mesh.material.textures.length != 0) {
+						for (i in 0...mesh.material.textures.length) {
+							if (i < maxTextureUnits) {
+								gl.activeTexture(gl.TEXTURE0 + i);
+								gl.bindTexture(gl.TEXTURE_2D, mesh.material.textures[i].__glTexture);
+							}
+						}
+					} else {
+						gl.activeTexture(gl.TEXTURE0);
+						gl.bindTexture(gl.TEXTURE_2D, Flx3DTexture.defaultTexture.__glTexture);
+				}*/
+				var program = mesh.material.applyGL(gl);
+
 				var uCameraPosition = gl.getUniformLocation(program, "uCameraPosition");
 				gl.uniform3f(uCameraPosition, camera3D.x, camera3D.y, camera3D.z);
 
@@ -157,14 +145,6 @@ class Flx3DViewBuffer extends BitmapData {
 				gl.uniformMatrix4fv(uModelTransform, false, model.getTransformMatrix());
 				// var uPerspectiveTransform = gl.getUniformLocation(program, "uPerspectiveTransform");
 				// gl.uniformMatrix4fv(uPerspectiveTransform, false, camera3D.getPerspectiveMatrix());
-
-				var modelColor = model.color;
-				var uModelColor = gl.getUniformLocation(program, "uModelColor");
-				gl.uniform4f(uModelColor, modelColor.redFloat, modelColor.greenFloat, modelColor.blueFloat, modelColor.alphaFloat);
-
-				var color = mesh.material.color;
-				var uColor = gl.getUniformLocation(program, "uColor");
-				gl.uniform4f(uColor, color.redFloat, color.greenFloat, color.blueFloat, color.alphaFloat);
 
 				// TODO: change when shader implementation is updated
 				var vPosition:Int = gl.getAttribLocation(program, "vPosition");
@@ -191,6 +171,28 @@ class Flx3DViewBuffer extends BitmapData {
 				gl.drawElements(gl.TRIANGLES, mesh.data.__elementCount, gl.UNSIGNED_SHORT, 0);
 			}
 		}
+	}
+
+	public function render() {
+		drawGroup();
+
+		var clearColor = 0xFF00000; // camera.bgColor;
+		var gl:WebGLRenderContext = Flx3DContext.gl;
+		setRenderToTexture();
+		flush();
+
+		var preRenderCaps = [for (cap in capabilities) gl.isEnabled(cap)];
+		var depthFuncOld = gl.getParameter(gl.DEPTH_FUNC);
+		for (cap in capabilities)
+			gl.enable(cap);
+
+		gl.depthMask(false);
+		gl.depthFunc(depthFunc);
+
+		// Clear
+		clearGL(gl, clearColor);
+
+		_renderModels(gl);
 		for (i in 0...capabilities.length) {
 			var cap:Int = capabilities[i];
 			var value:Bool = preRenderCaps[i];
@@ -208,8 +210,8 @@ class Flx3DViewBuffer extends BitmapData {
 	/*
 		instancing wip
 
-		var uniqueMeshes:Array<FlxMesh> = new Array<FlxMesh>();
-		// var meshes:Array<FlxMesh> = new Array<FlxMesh>();
+		var uniqueMeshes:Array<Flx3DMesh> = new Array<Flx3DMesh>();
+		// var meshes:Array<Flx3DMesh> = new Array<Flx3DMesh>();
 		for (mesh in meshes) {
 			if (mesh.__instanceCount == 0) {
 				uniqueMeshes.push(mesh);
@@ -231,8 +233,6 @@ class Flx3DViewBuffer extends BitmapData {
 
 			mesh.__instanceCount = 0;
 	}*/
-	// is an easier way to do this?
-
 	/**
 	 * `Array` of all the members in this group.
 	 */
@@ -318,8 +318,8 @@ class Flx3DViewBuffer extends BitmapData {
 	 * @return  The same `FlxBasic` object that was passed in.
 	 */
 	public function add(basic:FlxBasic):FlxBasic {
-		if (Std.isOfType(basic, FlxModel)) {
-			cast(basic, FlxModel).views.push(this);
+		if (Std.isOfType(basic, Flx3DModel)) {
+			cast(basic, Flx3DModel).views.push(this);
 		}
 		return _group.add(basic);
 	}
@@ -377,8 +377,8 @@ class Flx3DViewBuffer extends BitmapData {
 	 * @return  The removed object.
 	 */
 	public function remove(basic:FlxBasic, splice = false):FlxBasic {
-		if (Std.isOfType(basic, FlxModel)) {
-			cast(basic, FlxModel).views.remove(this);
+		if (Std.isOfType(basic, Flx3DModel)) {
+			cast(basic, Flx3DModel).views.remove(this);
 		}
 		return _group.remove(basic, splice);
 	}

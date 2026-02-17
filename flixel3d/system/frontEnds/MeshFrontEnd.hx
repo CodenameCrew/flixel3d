@@ -14,39 +14,39 @@ class MeshFrontEnd {
 	 * @param	graphic	FlxGraphic to store in the cache.
 	 * @return	cached FlxGraphic object.
 	 */
-	/*public inline function addMeshes(mesh:FlxMeshData):FlxMeshData {
+	/*public inline function addMeshes(mesh:Flx3DMeshData):Flx3DMeshData {
 		_cache.set(mesh.key, mesh);
 		return mesh;
 	}*/
 	/**
-	 * Gets FlxMeshData object from this storage by specified key.
-	 * @param	key	Key for FlxMeshData object (its name)
-	 * @return	FlxMeshData with the key name, or null if there is no such object
+	 * Gets Flx3DMeshData object from this storage by specified key.
+	 * @param	key	Key for Flx3DMeshData object (its name)
+	 * @return	Flx3DMeshData with the key name, or null if there is no such object
 	 */
-	/*public inline function get(key:String):FlxMeshData {
+	/*public inline function get(key:String):Flx3DMeshData {
 		return _cache.get(key);
 	}*/
 	public static inline function getFormatFromExtension(path:String) {
 		return switch (path.substring(path.lastIndexOf("."))) {
-			case '.obj': FlxMeshFormat.OBJ;
-			case '.fbx': FlxMeshFormat.FBX;
-			default: FlxMeshFormat.RAW;
+			case '.obj': Flx3DMeshFormat.OBJ;
+			case '.fbx': Flx3DMeshFormat.FBX;
+			default: Flx3DMeshFormat.RAW;
 		}
 	}
 
-	public function load(source:String):Map<String, FlxMesh> {
+	public function load(source:String):Map<String, Flx3DMesh> {
 		var format = getFormatFromExtension(source);
 		var loader:BaseLoader;
 		switch (format) {
-			case FlxMeshFormat.OBJ: loader = new ObjLoader();
+			case Flx3DMeshFormat.OBJ: loader = new ObjLoader();
 			default: throw new NotImplementedException("Wavefront OBJ (.obj) is currently the only supported model format.");
 		}
 
 		var datas = loader.load(source);
 
-		var meshes:Map<String, FlxMesh> = new Map<String, FlxMesh>();
+		var meshes:Map<String, Flx3DMesh> = new Map<String, Flx3DMesh>();
 		for (data in datas.keyValueIterator()) {
-			meshes.set(data.key, new FlxMesh(data.value));
+			meshes.set(data.key, new Flx3DMesh(data.value));
 		}
 
 		// loadedMesh.key = source; // key ?? source;

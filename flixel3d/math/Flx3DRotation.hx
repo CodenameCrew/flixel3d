@@ -1,30 +1,30 @@
 /**
- * FlxRotation3D is being merged with FlxTransform and will likely not be used. This is only here for archival purposes.
+ * Flx3DRotation is being merged with FlxTransform and will likely not be used. This is only here for archival purposes.
  */
 
 package flixel3d.math;
 
-abstract FlxRotationType(Int) from Int from UInt to Int to UInt {
-	public static inline var EULER:FlxRotationType = 0;
-	public static inline var QUATERNION:FlxRotationType = 1;
+abstract Flx3DRotationType(Int) from Int from UInt to Int to UInt {
+	public static inline var EULER:Flx3DRotationType = 0;
+	public static inline var QUATERNION:Flx3DRotationType = 1;
 }
 
 /**
- * FlxRotation3D is an abstraction which supports both Euler and Quaternion rotation using `FlxEuler` and `FlxQuaternion`.
+ * Flx3DRotation is an abstraction which supports both Euler and Quaternion rotation using `Flx3DEuler` and `Flx3DQuaternion`.
  */
-class FlxRotation3D {
+class Flx3DRotation {
 	/**
 	 * Dev note: should this be public or private?
 	**/
-	private var type:FlxRotationType;
+	private var type:Flx3DRotationType;
 
-	public var euler:FlxEuler;
-	public var quaternion:FlxQuaternion;
+	public var euler(default, null):Flx3DEuler;
+	public var quaternion(default, null):Flx3DQuaternion;
 
 	public function new() {
-		this.type = FlxRotationType.EULER;
-		this.euler = new FlxEuler();
-		this.quaternion = new FlxQuaternion();
+		this.type = Flx3DRotationType.EULER;
+		this.euler = new Flx3DEuler();
+		this.quaternion = new Flx3DQuaternion();
 	}
 
 	/**
@@ -32,7 +32,7 @@ class FlxRotation3D {
 	 *
 	 * @param	type		The type of rotation to convert to.
 	**/
-	public function convert(type:FlxRotationType) {
+	public function convert(type:Flx3DRotationType) {
 		if (this.type != type) {
 			this.type = type;
 			switch (type) {
@@ -48,7 +48,7 @@ class FlxRotation3D {
 	 *
 	 * @param	type		The type of rotation to convert to.
 	**/
-	public function convertFast(type:FlxRotationType) {
+	public function convertFast(type:Flx3DRotationType) {
 		if (this.type != type) {
 			this.type = type;
 			switch (type) {

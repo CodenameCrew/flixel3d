@@ -10,7 +10,7 @@ A 3D engine for flixel, using OpenGL.
 Installing via Git:
 
 ```
-haxelib git flixel3d https://github.com/FNF-CNE-Devs/flixel3d
+haxelib git flixel3d https://github.com/CodenameCrew/flixel3d
 ```
 
 Add the following to your `Project.xml`:
@@ -23,13 +23,13 @@ Add the following to your `Project.xml`:
 
 ### Model loading:
 ```haxe
-import flixel3d.FlxModel;
+import flixel3d.Flx3DModel;
 
 var sprite:FlxSprite = new FlxSprite();
 sprite.loadGraphic("assets/sprite.png");
 add(sprite);
 
-var model:FlxModel = new FlxModel();
+var model:Flx3DModel = new Flx3DModel();
 model.loadFbxModel("assets/model.fbx");
 model.angularVelocity3D.z = 30; // rotate the model
 add(model);
@@ -46,7 +46,7 @@ import flixel3d.FlxScene;
 
 var scene:FlxScene = new FlxScene();
 for (i in 0...2) {
-	var model:FlxModel = new FlxModel();
+	var model:Flx3DModel = new Flx3DModel();
 	model.loadFbxModel("assets/model.fbx");
 	model.x = i * 100;
 	scene.add(model);

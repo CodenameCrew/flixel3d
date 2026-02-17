@@ -9,7 +9,7 @@ class BaseLoader {
 	public var format:String;
 	public var data:BytesInput;
 
-	public var meshes:Map<String, FlxMeshData>;
+	public var meshes:Map<String, Flx3DMeshData>;
 
 	public var vertexCoords:Array<Array<Float>>;
 	public var normalCoords:Array<Array<Float>>;
@@ -30,8 +30,8 @@ class BaseLoader {
 	 * Parses the .obj file and its .
 	 * Throws an exception if invalid data is detected.
 	**/
-	public function load(data:OneOfTwo<String, haxe.io.Bytes>):Map<String, FlxMeshData> {
-		meshes = new Map<String, FlxMeshData>();
+	public function load(data:OneOfTwo<String, haxe.io.Bytes>):Map<String, Flx3DMeshData> {
+		meshes = new Map<String, Flx3DMeshData>();
 		vertexCoords = [];
 		normalCoords = [];
 		textureCoords = [];

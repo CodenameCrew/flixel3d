@@ -1,11 +1,11 @@
 package flixel3d.math;
 
-class FlxQuaternion {
-	public function new(x:Float, y:Float, z:Float, w:Float) {
+class Flx3DQuaternion {
+	public function new(x:Float = 0, y:Float = 0, z:Float = 0, w:Float = 0) {
 		set(x, y, z, w);
 	}
 
-	public function set(x:Float, y:Float, z:Float, w:Float):FlxQuaternion {
+	public function set(x:Float, y:Float, z:Float, w:Float):Flx3DQuaternion {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -14,14 +14,14 @@ class FlxQuaternion {
 		return this;
 	}
 
-	public var x:Float;
-	public var y:Float;
-	public var z:Float;
-	public var w:Float;
+	public var x:Float = 0;
+	public var y:Float = 0;
+	public var z:Float = 0;
+	public var w:Float = 0;
 
-	public function toEuler(?euler:FlxEuler):FlxEuler {
+	public function toEuler(?euler:Flx3DEuler):Flx3DEuler {
 		if (euler == null)
-			euler = new FlxEuler();
+			euler = new Flx3DEuler();
 
 		// roll (x-axis rotation)
 		var sinrCosp:Float = 2 * (w * x + y * z);
