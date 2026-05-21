@@ -43,6 +43,8 @@ class Flx3DObject extends FlxObject #if (flixel < "5.7.0") implements IContainer
 	public var quaternionZ(get, set):Float;
 	public var quaternionW(get, set):Float;
 
+	public var scale:Flx3DPoint = new Flx3DPoint(1, 1, 1);
+
 	#if (flixel < "5.7.0")
 	public var container:FlxContainer;
 	#end
@@ -50,7 +52,7 @@ class Flx3DObject extends FlxObject #if (flixel < "5.7.0") implements IContainer
 	public function new(x:Float = 0, y:Float = 0, z:Float = 0, width:Float = 0, height:Float = 0, depth:Float = 0) {
 		this.z = z;
 		this.depth = depth;
-		super();
+		super(x, y);
 	}
 
 	override function updateMotion(elapsed:Float) {
@@ -113,6 +115,8 @@ class Flx3DObject extends FlxObject #if (flixel < "5.7.0") implements IContainer
 	 */
 	@:noCompletion public function getTransformMatrix():Float32Array {
 		_matrix.identity();
+
+		_matrix.appendScale(scale.x, scale.y, scale.z);
 
 		_matrix.appendRotation(angleY, new Vector3D(0, 1, 0));
 		_matrix.appendRotation(-angleX, new Vector3D(1, 0, 0));

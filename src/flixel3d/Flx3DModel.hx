@@ -1,23 +1,12 @@
 package flixel3d;
 
 import flixel.FlxBasic;
-import flixel.FlxSprite;
-import flixel.math.FlxVelocity;
-import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.util.FlxColor;
-import flixel.util.typeLimit.OneOfThree;
 import flixel3d.Flx3DMesh;
 import flixel3d.internal.Flx3DSceneContainer;
-import flixel3d.loaders.BaseLoader;
-import flixel3d.loaders.FbxLoader;
-import flixel3d.loaders.ObjLoader;
 import flixel3d.math.Flx3DPoint;
 import flixel3d.render.Flx3DRenderBuffer;
-import flixel3d.render.Flx3DRenderBuffer;
-import flixel3d.system.Flx3DAssets.Flx3DMeshFormat;
-import haxe.exceptions.NotImplementedException;
-import haxe.io.Path;
-import lime.utils.Float32Array;
+import flixel3d.materials.Flx3DBaseMaterial;
 #if (flixel > "5.7.0")
 import flixel.group.FlxContainer;
 #else
@@ -54,6 +43,14 @@ class Flx3DModel extends Flx3DObject {
 	public function loadMeshes(source:String) {
 		meshes = FlxG3D.mesh.load(source);
 		return this;
+	}
+
+	public function applyMaterials(materials:Map<String, Flx3DBaseMaterial>) {
+		for (kv in materials.keyValueIterator()) {
+			var mesh = getMesh(kv.key);
+			if (mesh != null)
+				mesh.material = kv.value;
+		}
 	}
 
 	public function setMesh(id:String, mesh:Flx3DMesh) {

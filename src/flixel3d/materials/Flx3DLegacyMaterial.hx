@@ -1,6 +1,6 @@
 package flixel3d.materials;
 
-import flixel3d.materials.IFlx3DMaterial;
+import flixel3d.materials.Flx3DBaseMaterial;
 import lime.graphics.opengl.GLProgram;
 import lime.graphics.opengl.GLUniformLocation;
 import lime.graphics.WebGLRenderContext;
@@ -15,7 +15,7 @@ import haxe.exceptions.NotImplementedException;
  * This will be removed in the future.
  */
 @:deprecated("Will be removed once Flx3DStandardMaterial is ready for use.")
-class Flx3DLegacyMaterial implements IFlx3DMaterial {
+class Flx3DLegacyMaterial extends Flx3DBaseMaterial {
 	private var __shader:FlxShader3D;
 
 	public var color:FlxColor = FlxColor.WHITE;

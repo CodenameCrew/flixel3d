@@ -1,9 +1,9 @@
-# Flixel3D
+# <img src=".github/flixel3d_64px.webp" height="24"> Flixel3D 
 
-A 3D engine for flixel, using OpenGL.
+A 3D rendering addon for HaxeFlixel, using OpenGL.
 
 > [!CAUTION]
-> This library is still in development, and is not yet ready for use.
+> This library is still in development, and is not yet stable or feature-complete enough to be used in serious projects.
 
 ## Installation
 
@@ -19,59 +19,78 @@ Add the following to your `Project.xml`:
 <haxelib name="flixel3d" />
 ```
 
+## Supported Platforms
+✅ Windows, Linux, MacOS, Android, IOS, HTML5
+
+❌ Flash
+
 ## Usage
 
-### Model loading:
+### Model Loading / Scene rendering:
+
 ```haxe
+import flixel3d.Flx3DScene;
 import flixel3d.Flx3DModel;
 
-var sprite:FlxSprite = new FlxSprite();
-sprite.loadGraphic("assets/sprite.png");
-add(sprite);
-
-var model:Flx3DModel = new Flx3DModel();
-model.loadFbxModel("assets/model.fbx");
-model.angularVelocity3D.z = 30; // rotate the model
-add(model);
-
-var crown:FlxSprite = new FlxSprite();
-crown.loadGraphic("assets/crown.png");
-add(crown);
-```
-
-### Scene rendering:
-
-```haxe
-import flixel3d.FlxScene;
-
-var scene:FlxScene = new FlxScene();
-for (i in 0...2) {
+var scene:Flx3DScene = new Flx3DScene();
+for (i in -1...2) {
 	var model:Flx3DModel = new Flx3DModel();
-	model.loadFbxModel("assets/model.fbx");
-	model.x = i * 100;
-	scene.add(model);
+	model.loadMeshes("assets/models/SuzanneMonkey.obj");
+	model.x = i * 3;
+	model.z = -10;
+	model.angularVelocity3D.y = i * 50;
+	scene.objects.add(model);
 }
 add(scene);
 ```
 
-### Surface rendering:
-
+### Material Application
 ```haxe
-import flixel3d.FlxSurface;
+var model = new Flx3DModel(0, 0, -10);
+model.loadMeshes("flixel3d/models/haxe.obj");
 
-var surface:FlxSurface = new FlxSurface();
+model.angularVelocity3D.y = 30;
+model.scale.set(1.5, 1.5, 1.5);
 
-var sprite = new FlxSprite(0, 0);
-sprite.loadGraphic("assets/sprite.png");
-surface.add(sprite);
+var green = new Flx3DShadelessColorMaterial(0xFF00B902);
+var red = new Flx3DShadelessColorMaterial(0xFFF52704);
+var yellow = new Flx3DShadelessColorMaterial(0xFFFFC103);
+var darkblue = new Flx3DShadelessColorMaterial(0xFF3641FF);
+var lightblue = new Flx3DShadelessColorMaterial(0xFF04CDFB);
 
-sprite = new FlxSprite(100, 0);
-sprite.loadGraphic("assets/sprite.png");
-surface.add(sprite);
-
-add(surface);
+model.applyMaterials([
+	"Center" => green,
+	"X-TL" => yellow,
+	"X-TR" => red,
+	"X-BL" => darkblue,
+	"X-BR" => lightblue,
+	"X+TL" => yellow,
+	"X+TR" => red,
+	"X+BL" => darkblue,
+	"X+BR" => lightblue,
+]);
 ```
 
 ## License
 
-MIT
+The MIT License
+
+Copyright (C)2024-2026 Codename Engine Developers
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
