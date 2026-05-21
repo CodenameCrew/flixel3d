@@ -11,7 +11,11 @@ import flixel3d.internal.Flx3DContext;
 import openfl.display.BitmapData;
 import lime.graphics.opengl.GL;
 import openfl.Lib;
-import flixel.group.FlxContainer;
+#if (flixel > "5.7.0")
+import flixel.group.FlxContainer.FlxTypedContainer;
+#else
+import flixel3d.internal.compat.FlxContainer.FlxTypedContainer;
+#end
 import openfl.geom.Rectangle;
 import flixel.FlxBasic;
 import flixel.util.FlxSignal.FlxTypedSignal;

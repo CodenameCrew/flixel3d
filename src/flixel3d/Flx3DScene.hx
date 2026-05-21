@@ -5,7 +5,6 @@ import flixel3d.Flx3DCamera;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
 import flixel3d.render.Flx3DRenderBuffer;
-import flixel.group.FlxContainer;
 
 /**
  * Flx3DScene is an FlxSprite which a 3D scene is rendered onto.

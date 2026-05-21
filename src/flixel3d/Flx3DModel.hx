@@ -1,24 +1,28 @@
 package flixel3d;
 
-import flixel3d.render.Flx3DRenderBuffer;
-import haxe.exceptions.NotImplementedException;
-import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.FlxBasic;
 import flixel.FlxSprite;
 import flixel.math.FlxVelocity;
+import flixel.system.FlxAssets.FlxGraphicAsset;
+import flixel.util.FlxColor;
 import flixel.util.typeLimit.OneOfThree;
 import flixel3d.Flx3DMesh;
-import flixel3d.math.Flx3DPoint;
+import flixel3d.internal.Flx3DSceneContainer;
 import flixel3d.loaders.BaseLoader;
 import flixel3d.loaders.FbxLoader;
 import flixel3d.loaders.ObjLoader;
-import flixel3d.system.Flx3DAssets.Flx3DMeshFormat;
-import lime.utils.Float32Array;
-import flixel.util.FlxColor;
+import flixel3d.math.Flx3DPoint;
 import flixel3d.render.Flx3DRenderBuffer;
-import flixel3d.internal.Flx3DSceneContainer;
-import flixel.group.FlxContainer.FlxTypedContainer;
+import flixel3d.render.Flx3DRenderBuffer;
+import flixel3d.system.Flx3DAssets.Flx3DMeshFormat;
+import haxe.exceptions.NotImplementedException;
 import haxe.io.Path;
+import lime.utils.Float32Array;
+#if (flixel > "5.7.0")
+import flixel.group.FlxContainer;
+#else
+import flixel3d.internal.compat.FlxContainer;
+#end
 
 /**
  * Flx3DModel represents a 3D model which can be added to an `Flx3DScene`.
@@ -65,7 +69,7 @@ class Flx3DModel extends Flx3DObject {
 		super.update(elapsed);
 	}
 
-	private function findScene<T:FlxBasic>(container:FlxTypedContainer<T>):Null<Flx3DRenderBuffer> {
+	private function findScene<T:#if (flixel < "5.7.0") IContainerCompat #else FlxBasic #end>(container:T):Null<Flx3DRenderBuffer> {
 		if (container == null) {
 			return null;
 		} else if (Std.isOfType(container, Flx3DSceneContainer)) {

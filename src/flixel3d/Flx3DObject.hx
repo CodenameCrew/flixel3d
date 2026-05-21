@@ -8,8 +8,11 @@ import flixel.math.FlxVelocity;
 import flixel3d.math.Flx3DRotation;
 import openfl.geom.Matrix3D;
 import openfl.geom.Vector3D;
+#if (flixel < "5.7.0")
+import flixel3d.internal.compat.FlxContainer;
+#end
 
-class Flx3DObject extends FlxObject {
+class Flx3DObject extends FlxObject #if (flixel < "5.7.0") implements IContainerCompat #end {
 	private var _ignorePosition:Bool = false;
 	private var _matrix:Matrix3D = new Matrix3D();
 	private var _rawMatrix:Float32Array = new Float32Array(16);
@@ -39,6 +42,10 @@ class Flx3DObject extends FlxObject {
 	public var quaternionY(get, set):Float;
 	public var quaternionZ(get, set):Float;
 	public var quaternionW(get, set):Float;
+
+	#if (flixel < "5.7.0")
+	public var container:FlxContainer;
+	#end
 
 	public function new(x:Float = 0, y:Float = 0, z:Float = 0, width:Float = 0, height:Float = 0, depth:Float = 0) {
 		this.z = z;
