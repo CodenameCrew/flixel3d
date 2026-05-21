@@ -1,9 +1,11 @@
 package flixel3d;
 
+import flixel3d.internal.Flx3DSceneContainer;
 import flixel3d.Flx3DCamera;
 import flixel.FlxSprite;
+import flixel.util.FlxColor;
 import flixel3d.render.Flx3DRenderBuffer;
-import flixel.group.FlxGroup;
+import flixel.group.FlxContainer;
 
 /**
  * Flx3DScene is an FlxSprite which a 3D scene is rendered onto.
@@ -24,9 +26,20 @@ class Flx3DScene extends FlxSprite implements IFlx3DScene {
 		return buffer.camera3D = value;
 
 	/**
-	 * An FlxGroup containing all of the objects in the scene. (Dev note: should this be renamed?)
+	 * The 3D scene's clear colour.
 	 */
-	public var objects(get, null):FlxGroup;
+	public var bgColor(get, set):FlxColor;
+
+	public function get_bgColor()
+		return buffer.bgColor;
+
+	public function set_bgColor(value:FlxColor)
+		return buffer.bgColor = value;
+
+	/**
+	 * An FlxContainer containing all of the objects in the scene. (Dev note: should this be renamed?)
+	 */
+	public var objects(get, null):Flx3DSceneContainer;
 
 	public inline function get_objects()
 		return buffer.objects;
@@ -51,6 +64,11 @@ class Flx3DScene extends FlxSprite implements IFlx3DScene {
 		buffer.resize(width, height);
 	}
 
+	override function update(elapsed:Float) {
+		buffer.update(elapsed);
+		super.update(elapsed);
+	}
+
 	/**
 	 * Automatically goes through and calls render on everything you added.
 	 */
@@ -72,7 +90,12 @@ interface IFlx3DScene {
 	public var camera3D(get, set):Flx3DCamera;
 
 	/**
-	 * An FlxGroup containing all of the objects in the scene. (Dev note: should this be renamed?)
+	 * An FlxContainer containing all of the objects in the scene. (Dev note: should this be renamed?)
 	 */
-	public var objects(get, null):FlxGroup;
+	public var objects(get, null):Flx3DSceneContainer;
+
+	/**
+	 * The 3D scene's clear colour.
+	 */
+	public var bgColor(get, set):FlxColor;
 }

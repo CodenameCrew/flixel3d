@@ -62,6 +62,7 @@ class FlxShader3D {
 		uniform mat4 uViewTransform;
 		uniform mat4 uModelTransform;
 		uniform mat4 uPerspectiveTransform;
+		uniform vec2 uViewSize;
 
 		varying vec3 fColor;
 		varying vec2 fTexCoord;
@@ -70,11 +71,11 @@ class FlxShader3D {
 
 		float far = 100.;
 		float near = 0.1;
-		float aspect=16./9.;
 		float fov = 70.;
 
 		void main()
 		{
+			float aspect = uViewSize.x / uViewSize.y;
 			mat4 projection;  
 			projection[0] = vec4(1./(aspect*tan(fov/2.)),  0.,              0.,                          0.);
 			projection[1] = vec4(0.,                    1./tan(fov/2.),   0.,                          0.);

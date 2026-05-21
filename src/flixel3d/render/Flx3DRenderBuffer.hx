@@ -11,14 +11,15 @@ import flixel3d.internal.Flx3DContext;
 import openfl.display.BitmapData;
 import lime.graphics.opengl.GL;
 import openfl.Lib;
-import flixel.group.FlxGroup;
+import flixel.group.FlxContainer;
 import openfl.geom.Rectangle;
 import flixel.FlxBasic;
 import flixel.util.FlxSignal.FlxTypedSignal;
 import flixel.util.FlxSort;
-import flixel.group.FlxGroup.FlxTypedGroupIterator;
 import flixel.util.FlxArrayUtil;
+import flixel.util.FlxColor;
 import flixel3d.Flx3DScene.IFlx3DScene;
+import flixel3d.internal.Flx3DSceneContainer;
 
 /**
  * Flx3DRenderBuffer is a BitmapData which a 3D scene is rendered onto.
@@ -34,7 +35,19 @@ import flixel3d.Flx3DScene.IFlx3DScene;
 class Flx3DRenderBuffer extends BitmapData implements IFlx3DScene {
 	// just some bullshit needed for the IFlx3DScene interface
 	private var _camera3D:Flx3DCamera;
-	private var _objects:FlxGroup;
+	private var _objects:Flx3DSceneContainer;
+	private var _bgColor:FlxColor = 0x00000000;
+
+	/**
+	 * The 3D scene's clear colour.
+	 */
+	public var bgColor(get, set):FlxColor;
+
+	public function get_bgColor()
+		return _bgColor;
+
+	public function set_bgColor(value:FlxColor)
+		return _bgColor = value;
 
 	/**
 	 * The 3D scene's camera.
@@ -44,13 +57,13 @@ class Flx3DRenderBuffer extends BitmapData implements IFlx3DScene {
 	public function get_camera3D()
 		return _camera3D;
 
-	public function set_camera3D(value)
+	public function set_camera3D(value:Flx3DCamera)
 		return _camera3D = value;
 
 	/**
-	 * An FlxGroup containing all of the objects in the scene. (Dev note: should this be renamed?)
+	 * An FlxContainer containing all of the objects in the scene. (Dev note: should this be renamed?)
 	 */
-	public var objects(get, null):FlxGroup;
+	public var objects(get, null):Flx3DSceneContainer;
 
 	public function get_objects()
 		return _objects;
@@ -79,7 +92,7 @@ class Flx3DRenderBuffer extends BitmapData implements IFlx3DScene {
 		capabilities = [gl.BLEND, gl.DEPTH_TEST, gl.TEXTURE_2D];
 		depthFunc = gl.LESS;
 
-		_objects = new FlxGroup(maxSize);
+		_objects = new Flx3DSceneContainer(this, maxSize);
 		_renderQueue = new Array<Flx3DModel>();
 
 		camera3D = new Flx3DCamera();
@@ -163,6 +176,9 @@ class Flx3DRenderBuffer extends BitmapData implements IFlx3DScene {
 				var uCameraPosition = gl.getUniformLocation(program, "uCameraPosition");
 				gl.uniform3f(uCameraPosition, camera3D.x, camera3D.y, camera3D.z);
 
+				var uViewSize = gl.getUniformLocation(program, "uViewSize");
+				gl.uniform2f(uViewSize, width, height);
+
 				var uViewTransform = gl.getUniformLocation(program, "uViewTransform");
 				gl.uniformMatrix4fv(uViewTransform, false, camera3D.getTransformMatrix());
 				var uModelTransform = gl.getUniformLocation(program, "uModelTransform");
@@ -201,9 +217,9 @@ class Flx3DRenderBuffer extends BitmapData implements IFlx3DScene {
 	 * Renders the scene.
 	 */
 	public function render() {
-		drawGroup();
+		_objects.draw();
 
-		var clearColor = 0xFF00000; // camera.bgColor;
+		// var clearColor = 0xFF00000; // camera.bgColor;
 		var gl:WebGLRenderContext = Flx3DContext.gl;
 		setRenderToTexture();
 		flush();
@@ -217,7 +233,7 @@ class Flx3DRenderBuffer extends BitmapData implements IFlx3DScene {
 		gl.depthFunc(depthFunc);
 
 		// Clear
-		clearGL(gl, clearColor);
+		clearGL(gl, bgColor);
 
 		_renderModels(gl);
 		for (i in 0...capabilities.length) {
@@ -234,11 +250,8 @@ class Flx3DRenderBuffer extends BitmapData implements IFlx3DScene {
 		FlxArrayUtil.clearArray(_renderQueue);
 	}
 
-	/**
-	 * Automatically goes through and calls render on everything you added.
-	 */
-	private function drawGroup():Void {
-		_objects.draw();
+	public function update(elapsed:Float) {
+		_objects.update(elapsed);
 	}
 
 	/**

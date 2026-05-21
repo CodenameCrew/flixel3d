@@ -1,6 +1,6 @@
 {
 	"name": "flixel3d",
-	"url": "https://github.com/FNF-CNE-Devs/flixel3d",
+	"url": "https://github.com/CodenameCrew/flixel3d",
 	"license": "MIT",
 	"tags": [
 		"game",
@@ -9,10 +9,10 @@
 	],
 	"description": "A 3d engine for flixel",
 	"version": "0.0.1",
+	"classPath": "src/",
 	"releasenote": "Initial Release",
 	"contributors": [
-		"Ne_Eo",
-		"StrawberrySage"
+		"kitzsh"
 	],
 	"dependencies": {
 		"flixel": ""

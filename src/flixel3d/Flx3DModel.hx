@@ -1,5 +1,6 @@
 package flixel3d;
 
+import flixel3d.render.Flx3DRenderBuffer;
 import haxe.exceptions.NotImplementedException;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.FlxBasic;
@@ -15,6 +16,9 @@ import flixel3d.system.Flx3DAssets.Flx3DMeshFormat;
 import lime.utils.Float32Array;
 import flixel.util.FlxColor;
 import flixel3d.render.Flx3DRenderBuffer;
+import flixel3d.internal.Flx3DSceneContainer;
+import flixel.group.FlxContainer.FlxTypedContainer;
+import haxe.io.Path;
 
 /**
  * Flx3DModel represents a 3D model which can be added to an `Flx3DScene`.
@@ -44,8 +48,7 @@ class Flx3DModel extends Flx3DObject {
 	 * Loads all meshes from the obj file.
 	 */
 	public function loadMeshes(source:String) {
-		throw new NotImplementedException();
-		// meshes = FlxG3D.mesh.load(source);
+		meshes = FlxG3D.mesh.load(source);
 		return this;
 	}
 
@@ -62,9 +65,18 @@ class Flx3DModel extends Flx3DObject {
 		super.update(elapsed);
 	}
 
+	private function findScene<T:FlxBasic>(container:FlxTypedContainer<T>):Null<Flx3DRenderBuffer> {
+		if (container == null) {
+			return null;
+		} else if (Std.isOfType(container, Flx3DSceneContainer)) {
+			return @:privateAccess (cast container : Flx3DSceneContainer).parentScene;
+		} else if (container.container == null)
+			return null;
+		return findScene(container.container);
+	}
+
 	public override function draw() {
-		for (view in views) {
-			view.addToRenderQueue(this);
-		}
+		var scene = findScene(container);
+		scene?.addToRenderQueue(this);
 	}
 }

@@ -4,6 +4,7 @@ import flixel3d.system.Flx3DAssets;
 import flixel3d.loaders.BaseLoader;
 import flixel3d.loaders.ObjLoader;
 import haxe.exceptions.NotImplementedException;
+import haxe.io.Path;
 
 class MeshFrontEnd {
 	public function new() {}
@@ -27,9 +28,9 @@ class MeshFrontEnd {
 		return _cache.get(key);
 	}*/
 	public static inline function getFormatFromExtension(path:String) {
-		return switch (path.substring(path.lastIndexOf("."))) {
-			case '.obj': Flx3DMeshFormat.OBJ;
-			case '.fbx': Flx3DMeshFormat.FBX;
+		return switch (Path.extension(path)) {
+			case 'obj': Flx3DMeshFormat.OBJ;
+			case 'fbx': Flx3DMeshFormat.FBX;
 			default: Flx3DMeshFormat.RAW;
 		}
 	}
