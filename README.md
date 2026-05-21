@@ -20,9 +20,15 @@ Add the following to your `Project.xml`:
 ```
 
 ## Supported Platforms
+
 ✅ Windows, Linux, MacOS, Android, IOS, HTML5
 
 ❌ Flash
+
+## Documentation
+
+The API reference can be found at 
+https://kitzsh.github.io/flixel3d-api-reference.
 
 ## Usage
 
