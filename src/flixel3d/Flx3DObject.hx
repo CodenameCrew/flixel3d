@@ -1,13 +1,15 @@
 package flixel3d;
 
 import lime.utils.Float32Array;
-import flixel3d.math.Flx3DEuler;
 import flixel.FlxObject;
 import flixel3d.math.Flx3DPoint;
+import flixel3d.math.Flx3DRotationMode;
+import flixel3d.math.Flx3DMath;
 import flixel.math.FlxVelocity;
-import flixel3d.math.Flx3DRotation;
 import openfl.geom.Matrix3D;
 import openfl.geom.Vector3D;
+import openfl.Vector;
+import openfl.geom.Orientation3D;
 #if (flixel < "5.7.0")
 import flixel3d.internal.compat.FlxContainer;
 #end
@@ -16,7 +18,7 @@ class Flx3DObject extends FlxObject #if (flixel < "5.7.0") implements IContainer
 	private var _ignorePosition:Bool = false;
 	private var _matrix:Matrix3D = new Matrix3D();
 	private var _rawMatrix:Float32Array = new Float32Array(16);
-	private var _rotation:Flx3DRotation = new Flx3DRotation();
+	private var _decomposedMatrix:Vector<Vector3D>;
 
 	// Angular velocity
 	public var angularVelocity3D:Flx3DPoint = new Flx3DPoint();
@@ -34,14 +36,11 @@ class Flx3DObject extends FlxObject #if (flixel < "5.7.0") implements IContainer
 	public var depth:Float;
 
 	// Angle
-	public var angleX(get, set):Float;
-	public var angleY(get, set):Float;
-	public var angleZ(get, set):Float;
-
-	public var quaternionX(get, set):Float;
-	public var quaternionY(get, set):Float;
-	public var quaternionZ(get, set):Float;
-	public var quaternionW(get, set):Float;
+	public var rotationMode:Flx3DRotationMode = YXZ_EULER;
+	public var angleX:Float;
+	public var angleY:Float;
+	public var angleZ:Float;
+	public var angleW:Float;
 
 	public var scale:Flx3DPoint = new Flx3DPoint(1, 1, 1);
 
@@ -49,10 +48,20 @@ class Flx3DObject extends FlxObject #if (flixel < "5.7.0") implements IContainer
 	public var container:FlxContainer;
 	#end
 
+	/**
+	 * @param x			The initial X position of the Flx3DObject.
+	 * @param y			The initial Y position of the Flx3DObject.
+	 * @param Z			The initial Z position of the Flx3DObject.
+	 * @param width		The desired width of the Flx3DObject.
+	 * @param height	The desired height of the Flx3DObject.
+	 * @param depth		The desired depth (length along the Z axis) of the Flx3DObject.
+	**/
 	public function new(x:Float = 0, y:Float = 0, z:Float = 0, width:Float = 0, height:Float = 0, depth:Float = 0) {
 		this.z = z;
 		this.depth = depth;
 		super(x, y);
+
+		_decomposedMatrix = new Vector<Vector3D>();
 	}
 
 	override function updateMotion(elapsed:Float) {
@@ -103,26 +112,47 @@ class Flx3DObject extends FlxObject #if (flixel < "5.7.0") implements IContainer
 		z += deltaZ;
 	}
 
-	/*
-		var order = [0, 1, 2];
-		for (v in order) {
-			switch (v) {
-				case 0: _matrix.appendRotation(angleY, new Vector3D(0, 1, 0));
-				case 1: _matrix.appendRotation(-angleX, new Vector3D(1, 0, 0));
-				case 2: _matrix.appendRotation(-angleZ, new Vector3D(0, 0, 1));
-			}
-		}
-	 */
-	@:noCompletion public function getTransformMatrix():Float32Array {
+	@:dox(hide) @:noCompletion public function getTransformMatrix():Float32Array {
 		_matrix.identity();
 
 		_matrix.appendScale(scale.x, scale.y, scale.z);
 
-		_matrix.appendRotation(angleY, new Vector3D(0, 1, 0));
-		_matrix.appendRotation(-angleX, new Vector3D(1, 0, 0));
-		_matrix.appendRotation(-angleZ, new Vector3D(0, 0, 1));
+		switch (rotationMode) {
+			case XYZ_EULER:
+				_matrix.appendRotation(-angleX, Vector3D.X_AXIS);
+				_matrix.appendRotation(angleY, Vector3D.Y_AXIS);
+				_matrix.appendRotation(-angleZ, Vector3D.Z_AXIS);
+			case YXZ_EULER:
+				_matrix.appendRotation(angleY, Vector3D.Y_AXIS);
+				_matrix.appendRotation(-angleX, Vector3D.X_AXIS);
+				_matrix.appendRotation(-angleZ, Vector3D.Z_AXIS);
+			case ZYX_EULER:
+				_matrix.appendRotation(-angleZ, Vector3D.Z_AXIS);
+				_matrix.appendRotation(angleY, Vector3D.Y_AXIS);
+				_matrix.appendRotation(-angleX, Vector3D.X_AXIS);
+			case ZXY_EULER:
+				_matrix.appendRotation(-angleZ, Vector3D.Z_AXIS);
+				_matrix.appendRotation(-angleX, Vector3D.X_AXIS);
+				_matrix.appendRotation(angleY, Vector3D.Y_AXIS);
+			case XZY_EULER:
+				_matrix.appendRotation(-angleX, Vector3D.X_AXIS);
+				_matrix.appendRotation(-angleZ, Vector3D.Z_AXIS);
+				_matrix.appendRotation(angleY, Vector3D.Y_AXIS);
+			case YZX_EULER:
+				_matrix.appendRotation(angleY, Vector3D.Y_AXIS);
+				_matrix.appendRotation(-angleZ, Vector3D.Z_AXIS);
+				_matrix.appendRotation(-angleX, Vector3D.X_AXIS);
+			case QUATERNION:
+				_matrix.decomposeToOutput(Orientation3D.QUATERNION, _decomposedMatrix);
 
-		if (!_ignorePosition) // this is mainly used for the camera
+				var matrixRotation = _decomposedMatrix[1];
+				matrixRotation.setTo(angleX, angleY, angleZ);
+				matrixRotation.w = angleW;
+
+				_matrix.recompose(_decomposedMatrix, Orientation3D.QUATERNION);
+		}
+
+		if (!_ignorePosition) // _ignorePosition is mainly used for the camera
 			_matrix.appendTranslation(x, y, z);
 
 		// convert OpenFL matrix to Float32Array
@@ -135,75 +165,5 @@ class Flx3DObject extends FlxObject #if (flixel < "5.7.0") implements IContainer
 			}
 		}
 		return _rawMatrix;
-	}
-
-	public inline function get_angleX():Float {
-		_rotation.convert(Flx3DRotationType.EULER);
-		return _rotation.euler.x;
-	}
-
-	public inline function set_angleX(value:Float):Float {
-		_rotation.convert(Flx3DRotationType.EULER);
-		return _rotation.euler.x = value;
-	}
-
-	public inline function get_angleY():Float {
-		_rotation.convert(Flx3DRotationType.EULER);
-		return _rotation.euler.y;
-	}
-
-	public inline function set_angleY(value:Float):Float {
-		_rotation.convert(Flx3DRotationType.EULER);
-		return _rotation.euler.y = value;
-	}
-
-	public inline function get_angleZ():Float {
-		_rotation.convert(Flx3DRotationType.EULER);
-		return _rotation.euler.z;
-	}
-
-	public inline function set_angleZ(value:Float):Float {
-		_rotation.convert(Flx3DRotationType.EULER);
-		return _rotation.euler.z = value;
-	}
-
-	public inline function get_quaternionX():Float {
-		_rotation.convert(Flx3DRotationType.QUATERNION);
-		return _rotation.quaternion.x;
-	}
-
-	public inline function set_quaternionX(value:Float):Float {
-		_rotation.convert(Flx3DRotationType.QUATERNION);
-		return _rotation.quaternion.x = value;
-	}
-
-	public inline function get_quaternionY():Float {
-		_rotation.convert(Flx3DRotationType.QUATERNION);
-		return _rotation.quaternion.y;
-	}
-
-	public inline function set_quaternionY(value:Float):Float {
-		_rotation.convert(Flx3DRotationType.QUATERNION);
-		return _rotation.quaternion.y = value;
-	}
-
-	public inline function get_quaternionZ():Float {
-		_rotation.convert(Flx3DRotationType.QUATERNION);
-		return _rotation.quaternion.z;
-	}
-
-	public inline function set_quaternionZ(value:Float):Float {
-		_rotation.convert(Flx3DRotationType.QUATERNION);
-		return _rotation.quaternion.z = value;
-	}
-
-	public inline function get_quaternionW():Float {
-		_rotation.convert(Flx3DRotationType.QUATERNION);
-		return _rotation.quaternion.w;
-	}
-
-	public inline function set_quaternionW(value:Float):Float {
-		_rotation.convert(Flx3DRotationType.QUATERNION);
-		return _rotation.quaternion.w = value;
 	}
 }
