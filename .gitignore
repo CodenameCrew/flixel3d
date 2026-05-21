@@ -1,8 +1,6 @@
-samples/export
-samples/export/*
-samples/.haxelib
-samples/.haxelib/*
-testproject/*
+samples/**/export/
+samples/**/.haxelib/
+testproject/
 docs/
 .DS_Store
 export/
