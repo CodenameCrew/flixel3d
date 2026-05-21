@@ -1,4 +1,4 @@
-# <img src=".github/flixel3d_64px.webp" height="24"> Flixel3D 
+# <img src=".github/flixel3d.webp" height="24"> Flixel3D 
 
 A 3D rendering addon for HaxeFlixel, using OpenGL.
 
