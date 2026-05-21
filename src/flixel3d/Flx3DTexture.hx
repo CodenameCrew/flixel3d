@@ -29,7 +29,7 @@ class Flx3DTexture implements IFlxDestroyable {
 	private static var _defaultTexture:Flx3DTexture = null;
 	public static var defaultTexture(get, never):Flx3DTexture;
 
-	public static function get_defaultTexture() {
+	@:dox(hide) public static function get_defaultTexture() {
 		if (_defaultTexture == null)
 			_defaultTexture = Flx3DTexture.fromBitmapData(new BitmapData(1, 1, 0xFFFFFFFF)); // FlxColor.fromRGB(246, 136, 31)
 		return _defaultTexture;

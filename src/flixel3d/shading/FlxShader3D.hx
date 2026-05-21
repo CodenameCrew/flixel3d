@@ -100,7 +100,7 @@ class FlxShader3D {
 	private static var _defaultShader:FlxShader3D;
 	public static var defaultShader(get, null):FlxShader3D;
 
-	public static function get_defaultShader() {
+	@:dox(hide) public static function get_defaultShader() {
 		if (_defaultShader != null)
 			return _defaultShader;
 		_defaultShader = new FlxShader3D(DEFAULT_FRAGMENT, DEFAULT_VERTEX);

@@ -18,10 +18,10 @@ class Flx3DScene extends FlxSprite implements IFlx3DScene {
 	 */
 	public var camera3D(get, set):Flx3DCamera;
 
-	public inline function get_camera3D()
+	@:dox(hide) public inline function get_camera3D()
 		return buffer.camera3D;
 
-	public inline function set_camera3D(value:Flx3DCamera)
+	@:dox(hide) public inline function set_camera3D(value:Flx3DCamera)
 		return buffer.camera3D = value;
 
 	/**
@@ -29,10 +29,10 @@ class Flx3DScene extends FlxSprite implements IFlx3DScene {
 	 */
 	public var bgColor(get, set):FlxColor;
 
-	public function get_bgColor()
+	@:dox(hide) public function get_bgColor()
 		return buffer.bgColor;
 
-	public function set_bgColor(value:FlxColor)
+	@:dox(hide) public function set_bgColor(value:FlxColor)
 		return buffer.bgColor = value;
 
 	/**
@@ -40,7 +40,7 @@ class Flx3DScene extends FlxSprite implements IFlx3DScene {
 	 */
 	public var objects(get, null):Flx3DSceneContainer;
 
-	public inline function get_objects()
+	@:dox(hide) public inline function get_objects()
 		return buffer.objects;
 
 	/**

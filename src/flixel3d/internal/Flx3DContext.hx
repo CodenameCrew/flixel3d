@@ -10,15 +10,15 @@ class Flx3DContext {
 	public static var gl(get, null):WebGLRenderContext;
 	public static var glVersion(get, null):String;
 
-	public static inline function get_context3D() {
+	@:dox(hide) public static inline function get_context3D() {
 		return FlxG.stage.context3D;
 	}
 
-	public static inline function get_gl() {
+	@:dox(hide) public static inline function get_gl() {
 		@:privateAccess return context3D.gl;
 	}
 
-	public static inline function get_glVersion() {
+	@:dox(hide) public static inline function get_glVersion() {
 		#if desktop
 		return GL.getString(GL.VERSION);
 		#end

@@ -47,10 +47,10 @@ class Flx3DRenderBuffer extends BitmapData implements IFlx3DScene {
 	 */
 	public var bgColor(get, set):FlxColor;
 
-	public function get_bgColor()
+	@:dox(hide) public function get_bgColor()
 		return _bgColor;
 
-	public function set_bgColor(value:FlxColor)
+	@:dox(hide) public function set_bgColor(value:FlxColor)
 		return _bgColor = value;
 
 	/**
@@ -58,10 +58,10 @@ class Flx3DRenderBuffer extends BitmapData implements IFlx3DScene {
 	 */
 	public var camera3D(get, set):Flx3DCamera;
 
-	public function get_camera3D()
+	@:dox(hide) public function get_camera3D()
 		return _camera3D;
 
-	public function set_camera3D(value:Flx3DCamera)
+	@:dox(hide) public function set_camera3D(value:Flx3DCamera)
 		return _camera3D = value;
 
 	/**
@@ -69,7 +69,7 @@ class Flx3DRenderBuffer extends BitmapData implements IFlx3DScene {
 	 */
 	public var objects(get, null):Flx3DSceneContainer;
 
-	public function get_objects()
+	@:dox(hide) public function get_objects()
 		return _objects;
 
 	private var __renderTarget:RectangleTexture;

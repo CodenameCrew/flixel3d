@@ -20,15 +20,15 @@ class FlxG3D {
 
 	public static var mesh:MeshFrontEnd = new MeshFrontEnd();
 
-	public static function get_context3D() {
+	@:dox(hide) public static function get_context3D() {
 		return FlxG.stage.context3D;
 	}
 
-	public static function get_gl() {
+	@:dox(hide) public static function get_gl() {
 		return context3D.gl;
 	}
 
-	public static function get_glVersion() {
+	@:dox(hide) public static function get_glVersion() {
 		#if desktop
 		return GL.getString(GL.VERSION);
 		#end

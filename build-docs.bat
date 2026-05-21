@@ -6,4 +6,4 @@
 :: python -m http.server
 
 haxe dox.hxml
-haxelib run dox -i docs -o docs/pages
+haxelib run dox -i docs -D source-path https://github.com/CodenameCrew/flixel3d/blob/main/src -o docs/pages --include "flixel3d" -o docs/pages
