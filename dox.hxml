@@ -1,4 +1,4 @@
--cp flixel3d
+-cp src
 -D doc-gen
 # this define is needed to prevent errors in flixel when compiling docs
 -D FLX_STANDARD_ASSETS_DIRECTORY
