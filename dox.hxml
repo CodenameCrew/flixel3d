@@ -1,0 +1,12 @@
+-cp flixel3d
+-D doc-gen
+# this define is needed to prevent errors in flixel when compiling docs
+-D FLX_STANDARD_ASSETS_DIRECTORY
+-L flixel
+--macro include('flixel3d')
+--no-output
+--each
+
+--next
+-xml docs/cpp.xml
+-cpp export/cpp

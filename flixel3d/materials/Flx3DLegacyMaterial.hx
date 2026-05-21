@@ -10,14 +10,19 @@ import flixel3d.system.Flx3DAssets.Flx3DTextureAsset;
 import openfl.display.BitmapData;
 import haxe.exceptions.NotImplementedException;
 
-class Flx3DTestMaterial implements IFlx3DMaterial {
+/**
+ * A temporary implementation of the deprecated FlxMaterial class in the new material system.
+ * This will be removed in the future.
+ */
+@:deprecated("Will be removed once Flx3DStandardMaterial is ready for use.")
+class Flx3DLegacyMaterial implements IFlx3DMaterial {
 	private var __shader:FlxShader3D;
 
 	public var color:FlxColor = FlxColor.WHITE;
 
 	public var textures:Array<Flx3DTexture>;
 
-	public function applyGL(gl:WebGLRenderContext):GLProgram @:privateAccess {
+	private function applyGL(gl:WebGLRenderContext):GLProgram @:privateAccess {
 		var program:GLProgram = __shader.__glProgram;
 		gl.useProgram(program);
 
@@ -49,7 +54,7 @@ class Flx3DTestMaterial implements IFlx3DMaterial {
 	/**
 	 * A helper for setting the main texture.
 	 */
-	public function setTexture(texture:Flx3DTextureAsset, ?key:String):Flx3DTestMaterial {
+	public function setTexture(texture:Flx3DTextureAsset, ?key:String):Flx3DLegacyMaterial {
 		var newTexture:Flx3DTexture = getTexture(texture, key);
 
 		if (textures.length > 0)
@@ -71,13 +76,13 @@ class Flx3DTestMaterial implements IFlx3DMaterial {
 		return newTexture;
 	}
 
-	public function addTexture(texture:Flx3DTextureAsset, ?key:String):Flx3DTestMaterial {
+	public function addTexture(texture:Flx3DTextureAsset, ?key:String):Flx3DLegacyMaterial {
 		var newTexture:Flx3DTexture = getTexture(texture, key);
 		textures.push(newTexture);
 		return this;
 	}
 
-	public function insertTexture(index:UInt, texture:Flx3DTextureAsset, ?key:String):Flx3DTestMaterial {
+	public function insertTexture(index:UInt, texture:Flx3DTextureAsset, ?key:String):Flx3DLegacyMaterial {
 		var newTexture:Flx3DTexture = getTexture(texture, key);
 		textures.insert(index, newTexture);
 		return this;

@@ -1,6 +1,6 @@
 package flixel3d.loaders;
 
-import flixel3d.Flx3DMeshData.VertexAttribute;
+import flixel3d.Flx3DGeometry.VertexAttribute;
 import haxe.io.Eof;
 import haxe.exceptions.NotImplementedException;
 import flixel.util.typeLimit.OneOfTwo;
@@ -12,7 +12,8 @@ import openfl.utils.ByteArray;
  * Spec: https://www.martinreddy.net/gfx/3d/OBJ.spec
  * Spec: https://www.fileformat.info/format/material/
  *
-**/
+ * Note: Currently does not properly support quad faces. For now, triangulate the faces.
+ */
 class ObjLoader extends BaseLoader {
 	public function new() {
 		super("obj");
@@ -28,7 +29,7 @@ class ObjLoader extends BaseLoader {
 	/**
 	 * Parses a line from the .obj file.
 	 * Throws an exception if invalid data is detected.
-	**/
+	 */
 	// BUG: Quads don't always load correctly. The current workaround is to manually triangulate quads in Blender.
 	// TODO: Add MTL support
 	private function parseLine(line:String) {
@@ -37,10 +38,10 @@ class ObjLoader extends BaseLoader {
 			/*case "#": // comment
 				case "mtllib": // the file wth material data
 				case "o": // idk what this is, probably the name of the object? */
-			case "o": // new Flx3DMeshData with name
+			case "o": // new Flx3DGeometry with name
 				if (!firstMesh) {
 					// var attributes:Array<VertexAttribute> = [{name: "vPosition", count: 3}, {name: "vTexCoord", count: 2}];
-					meshes.set(curName, Flx3DMeshData.fromArray(vertexArray, elementArray, []));
+					meshes.set(curName, Flx3DGeometry.fromArray(vertexArray, elementArray, []));
 					// faceOffsetVertex += vertexCoords.length;
 					// faceOffsetTexture += textureCoords.length;
 					elementOffset += elementArray.length;
@@ -117,10 +118,9 @@ class ObjLoader extends BaseLoader {
 					faceVertexCount++;
 				}
 				switch (numVertices) {
-					case 3: // we need to make
+					case 3:
 						for (element in elements) {
 							elementArray.push(element);
-							// elementBuffer.writeUnsignedInt(element);
 						}
 					case 4:
 						// https://gamedev.stackexchange.com/a/45685 🙏 BLESS 🙏
@@ -135,7 +135,7 @@ class ObjLoader extends BaseLoader {
 		}
 	}
 
-	public override function load(data:OneOfTwo<String, haxe.io.Bytes>):Map<String, Flx3DMeshData> {
+	public override function load(data:OneOfTwo<String, haxe.io.Bytes>):Map<String, Flx3DGeometry> {
 		super.load(data);
 
 		try {
@@ -147,7 +147,7 @@ class ObjLoader extends BaseLoader {
 			parseLine("o end");
 		}
 
-		// meshes.set("lol", Flx3DMeshData.fromArray(vertexArray, elementArray, [])); // return Flx3DMeshData.fromArray(vertexArray, elementArray);
+		// meshes.set("lol", Flx3DGeometry.fromArray(vertexArray, elementArray, [])); // return Flx3DGeometry.fromArray(vertexArray, elementArray);
 
 		return meshes;
 	}

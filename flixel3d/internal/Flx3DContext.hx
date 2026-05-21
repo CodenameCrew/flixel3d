@@ -3,9 +3,6 @@ package flixel3d.internal;
 import lime.graphics.WebGLRenderContext;
 import flixel.FlxG;
 import openfl.display3D.Context3D;
-import haxe.Exception;
-import openfl.events.Event;
-import flixel3d.system.frontEnds.MeshFrontEnd;
 import lime.graphics.opengl.GL;
 
 class Flx3DContext {

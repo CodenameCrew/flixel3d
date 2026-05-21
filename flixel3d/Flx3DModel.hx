@@ -1,10 +1,12 @@
 package flixel3d;
 
+import haxe.exceptions.NotImplementedException;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.FlxBasic;
 import flixel.FlxSprite;
 import flixel.math.FlxVelocity;
 import flixel.util.typeLimit.OneOfThree;
+import flixel3d.Flx3DMesh;
 import flixel3d.math.Flx3DPoint;
 import flixel3d.loaders.BaseLoader;
 import flixel3d.loaders.FbxLoader;
@@ -15,21 +17,17 @@ import flixel.util.FlxColor;
 import flixel3d.render.Flx3DRenderBuffer;
 
 /**
- * This is a sprite which renders a single 3d model,
- * if combined with the FlxScene class, it can be used to render multiple models at once.
- * This class makes it so you can render a single object and layer it on top of another object.
- * Flx3DModels do not appear on regular `FlxCamera`s, only `FlxCamera3D`s.
-**/
+ * Flx3DModel represents a 3D model which can be added to an `Flx3DScene`.
+ * It is a collection of multiple `Flx3DMesh`es.
+ */
 @:access(flixel3d.render.Flx3DRenderBuffer)
 class Flx3DModel extends Flx3DObject {
 	private var views:Array<Flx3DRenderBuffer>;
-	private var mx:Float32Array;
 
 	public var color:FlxColor = 0xFFFFFFFF;
 
 	public function new(x:Float = 0, y:Float = 0, z:Float = 0) {
 		meshes = [];
-		mx = new Float32Array(16);
 		super(x, y, z);
 		views = new Array<Flx3DRenderBuffer>();
 	}
@@ -44,14 +42,15 @@ class Flx3DModel extends Flx3DObject {
 
 	/**
 	 * Loads all meshes from the obj file.
-	**/
+	 */
 	public function loadMeshes(source:String) {
-		meshes = FlxG3D.mesh.load(source);
+		throw new NotImplementedException();
+		// meshes = FlxG3D.mesh.load(source);
 		return this;
 	}
 
-	public function setMesh(id:String, data:flixel3d.Flx3DMesh) {
-		meshes.set(id, data);
+	public function setMesh(id:String, mesh:Flx3DMesh) {
+		meshes.set(id, mesh);
 		return this;
 	}
 

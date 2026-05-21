@@ -21,17 +21,17 @@ class Flx3DEuler {
 
 	/**
 	 * Alias for x
-	**/
+	 */
 	public var pitch(get, set):Float;
 
 	/**
 	 * Alias for y
-	**/
+	 */
 	public var yaw(get, set):Float;
 
 	/**
 	 * Alias for z
-	**/
+	 */
 	public var roll(get, set):Float;
 
 	@:noCompletion public inline function get_pitch() {
@@ -60,7 +60,7 @@ class Flx3DEuler {
 
 	/**
 	 * Converts Flx3DEuler into an Flx3DQuaternion.
-	**/
+	 */
 	public function toQuaternion(?quaternion:Flx3DQuaternion):Flx3DQuaternion {
 		if (quaternion == null)
 			quaternion = new Flx3DQuaternion();
@@ -82,7 +82,7 @@ class Flx3DEuler {
 
 	/**
 	 * Same as toQuaternion, except it uses Flixel's fastSin and fastCos methods, making it faster but slightly less accurate.
-	**/
+	 */
 	public function toQuaternionFast(?quaternion:Flx3DQuaternion):Flx3DQuaternion {
 		if (quaternion == null)
 			quaternion = new Flx3DQuaternion();

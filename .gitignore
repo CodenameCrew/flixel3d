@@ -2,9 +2,7 @@ samples/export
 samples/export/*
 samples/.haxelib
 samples/.haxelib/*
-testplayground/export
-testplayground/export/*
-testplayground/.haxelib
-testplayground/.haxelib/*
-**/.DS_Store
+testproject/*
+docs/
+.DS_Store
 export/

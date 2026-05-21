@@ -5,11 +5,14 @@ import haxe.io.BytesInput;
 import openfl.Assets;
 import openfl.utils.ByteArray;
 
+/**
+ * The base class for loading models
+ */
 class BaseLoader {
 	public var format:String;
 	public var data:BytesInput;
 
-	public var meshes:Map<String, Flx3DMeshData>;
+	public var meshes:Map<String, Flx3DGeometry>;
 
 	public var vertexCoords:Array<Array<Float>>;
 	public var normalCoords:Array<Array<Float>>;
@@ -18,20 +21,17 @@ class BaseLoader {
 	public var vertexArray:Array<Float>;
 	public var elementArray:Array<UInt>;
 
-	var vertexCount:UInt = 0;
+	private var vertexCount:UInt = 0;
 
 	public function new(format:String) {
 		this.format = format;
-		// vertexBuffer = new ByteArray();
-		// elementBuffer = new ByteArray();
 	}
 
 	/**
-	 * Parses the .obj file and its .
-	 * Throws an exception if invalid data is detected.
-	**/
-	public function load(data:OneOfTwo<String, haxe.io.Bytes>):Map<String, Flx3DMeshData> {
-		meshes = new Map<String, Flx3DMeshData>();
+	 * The base loading functionality.
+	 */
+	public function load(data:OneOfTwo<String, haxe.io.Bytes>):Map<String, Flx3DGeometry> {
+		meshes = new Map<String, Flx3DGeometry>();
 		vertexCoords = [];
 		normalCoords = [];
 		textureCoords = [];

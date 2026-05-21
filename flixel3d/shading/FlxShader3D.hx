@@ -5,7 +5,7 @@ import lime.graphics.opengl.GLProgram;
 import openfl.Lib;
 import flixel3d.internal.Flx3DContext;
 
-@:haxe.warning("FlxShader3D will be reworked at a later stage.")
+@:deprecated("FlxShader3D will be reworked at a later stage.")
 @:access(openfl.display3D.Context3D)
 @:allow(flixel3d.render.ViewBitmap)
 class FlxShader3D {

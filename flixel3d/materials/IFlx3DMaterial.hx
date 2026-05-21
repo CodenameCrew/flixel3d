@@ -12,5 +12,5 @@ interface IFlx3DMaterial {
 			_textures = new Array<Flx3DTexture>();
 			_shader = new FlxShader3D("", FlxShader3D.DEFAULT_VERTEX);
 	}*/
-	public function applyGL(gl:WebGLRenderContext):GLProgram;
+	private function applyGL(gl:WebGLRenderContext):GLProgram;
 }

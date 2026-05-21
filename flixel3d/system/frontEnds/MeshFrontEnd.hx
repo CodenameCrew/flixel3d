@@ -14,16 +14,16 @@ class MeshFrontEnd {
 	 * @param	graphic	FlxGraphic to store in the cache.
 	 * @return	cached FlxGraphic object.
 	 */
-	/*public inline function addMeshes(mesh:Flx3DMeshData):Flx3DMeshData {
+	/*public inline function addMeshes(mesh:Flx3DGeometry):Flx3DGeometry {
 		_cache.set(mesh.key, mesh);
 		return mesh;
 	}*/
 	/**
-	 * Gets Flx3DMeshData object from this storage by specified key.
-	 * @param	key	Key for Flx3DMeshData object (its name)
-	 * @return	Flx3DMeshData with the key name, or null if there is no such object
+	 * Gets Flx3DGeometry object from this storage by specified key.
+	 * @param	key	Key for Flx3DGeometry object (its name)
+	 * @return	Flx3DGeometry with the key name, or null if there is no such object
 	 */
-	/*public inline function get(key:String):Flx3DMeshData {
+	/*public inline function get(key:String):Flx3DGeometry {
 		return _cache.get(key);
 	}*/
 	public static inline function getFormatFromExtension(path:String) {

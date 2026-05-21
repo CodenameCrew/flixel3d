@@ -27,9 +27,9 @@ typedef VertexAttribute = {
 }
 
 /**
- * This is a mesh containing the data used to render an Flx3DModel.
-**/
-class Flx3DMeshData implements IFlxDestroyable {
+ * `Flx3DGeometry` represents the geometry data used by `Flx3DMesh`.
+ */
+class Flx3DGeometry implements IFlxDestroyable {
 	private var __instanceCount:UInt; // for use in renderer
 
 	public var key:String = "";
@@ -50,11 +50,11 @@ class Flx3DMeshData implements IFlxDestroyable {
 		attributes = new Array<VertexAttribute>();
 	}
 
-	public function makeUnique():Flx3DMeshData {
+	public function makeUnique():Flx3DGeometry {
 		throw new NotImplementedException();
 	}
 
-	/*public static function fromAssetKey(source:String, unique:Bool = false, ?key:String, cache:Bool = true, ?format:Flx3DMeshFormat):Flx3DMeshData {
+	/*public static function fromAssetKey(source:String, unique:Bool = false, ?key:String, cache:Bool = true, ?format:Flx3DMeshFormat):Flx3DGeometry {
 			if (format == null)
 				format = getFormatFromExtension(source);
 			var loader:BaseLoader;
@@ -69,11 +69,11 @@ class Flx3DMeshData implements IFlxDestroyable {
 			return loadedMesh;
 		}
 
-		public static function fromBytes(data:haxe.io.Bytes, format:Flx3DMeshFormat, unique:Bool = false, ?key:String, cache:Bool = true):Flx3DMeshData {
+		public static function fromBytes(data:haxe.io.Bytes, format:Flx3DMeshFormat, unique:Bool = false, ?key:String, cache:Bool = true):Flx3DGeometry {
 			throw new NotImplementedException();
 	}*/
-	public static function fromArray(vertexData:Array<Float>, elementData:Array<UInt>, attributes:Array<VertexAttribute>):Flx3DMeshData {
-		var mesh = new Flx3DMeshData();
+	public static function fromArray(vertexData:Array<Float>, elementData:Array<UInt>, attributes:Array<VertexAttribute>):Flx3DGeometry {
+		var mesh = new Flx3DGeometry();
 
 		mesh.__vertexBuffer = __createArrayBuffer(__haxeArrayToFloat32Array(vertexData));
 		mesh.__elementBuffer = __createElementArrayBuffer(__haxeArrayToUInt16Array(elementData));

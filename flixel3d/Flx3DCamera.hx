@@ -13,10 +13,16 @@ import flixel3d.render.Flx3DRenderBuffer;
 /**
  * 3D camera camera controls for a view.
  * Generally does not need to be instantiated manually, as it is automatically added to each view, which only supports a single camera at a time.
-**/
+ */
 class Flx3DCamera extends Flx3DObject {
+	/**
+	 * The field of view of the camera lens.
+	 */
 	public var fov:Float;
 
+	/**
+	 * @param   fov		The field of view of the camera.
+	 */
 	public function new(fov:Float = 90) {
 		super();
 		this.fov = fov;

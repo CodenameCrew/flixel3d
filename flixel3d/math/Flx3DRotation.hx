@@ -15,7 +15,7 @@ abstract Flx3DRotationType(Int) from Int from UInt to Int to UInt {
 class Flx3DRotation {
 	/**
 	 * Dev note: should this be public or private?
-	**/
+	 */
 	private var type:Flx3DRotationType;
 
 	public var euler(default, null):Flx3DEuler;
@@ -31,7 +31,7 @@ class Flx3DRotation {
 	 * Converts to a different type of rotation.
 	 *
 	 * @param	type		The type of rotation to convert to.
-	**/
+	 */
 	public function convert(type:Flx3DRotationType) {
 		if (this.type != type) {
 			this.type = type;
@@ -47,7 +47,7 @@ class Flx3DRotation {
 	 * This has no effect on conversions from quaternion to euler angles.
 	 *
 	 * @param	type		The type of rotation to convert to.
-	**/
+	 */
 	public function convertFast(type:Flx3DRotationType) {
 		if (this.type != type) {
 			this.type = type;

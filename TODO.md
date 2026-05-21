@@ -3,25 +3,25 @@
 ## General
 
 - [ ] Add a proper readme
-- [ ] Add a proper documentation
+- [i] Add a proper documentation
 - [ ] Add a proper contributing guide
 - [ ] Add a proper changelog
 
 ## Engine
 
-- [ ] Render something using opengl directly
-- [ ] Render it to a bitmap then render that bitmap to flixel
-- [ ] Add a proper scene system
-- [ ] Add a proper model system
+- [x] Render something using opengl directly
+- [x] Render it to a bitmap then render that bitmap to flixel
+- [x] Add a proper scene system
+- [i] Add a proper model system
 - [ ] Add a proper surface system
-- [ ] Add a proper camera system
+- [i] Add a proper camera system
 - [ ] Add a proper light system
-- [ ] Add a proper material system
+- [i] Add a proper material system
 
 ## Loaders
 
 - [ ] Add a proper loader for .fbx files
-- [ ] Add a proper loader for .obj files
+- [i] Add a proper loader for .obj files
 
 ## Shaders
 
